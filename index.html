@@ -1,446 +1,200 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý kinh doanh — Nem Nướng Dũng Hiền</title>
-  <meta name="description" content="Quản lý doanh thu, chi phí và lợi nhuận theo từng mặt hàng.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23b32120'/%3E%3Cpath d='M9 23c0-5 3.1-9 7-9s7 4 7 9H9Z' fill='%23fff4df'/%3E%3Cpath d='M11 10c1.5-2 2.5 2 4 0s2.5 2 4 0 2.5 2 3 0' fill='none' stroke='%23ffc454' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
-  <style>
-    :root{
-      --bg:#f5f1e8;--surface:#fffdf8;--surface-2:#faf5eb;--ink:#29231e;--muted:#766a60;
-      --line:#ded3c4;--red:#b32120;--red-dark:#8e1d1c;--red-soft:#fff0eb;--green:#397158;
-      --green-soft:#e8f3e8;--amber:#b57520;--amber-soft:#fff2d6;--sidebar:#241e1a;--sidebar-2:#392f29;
-      --radius:18px;--shadow:0 10px 28px rgba(61,41,27,.07);
-    }
-    *{box-sizing:border-box}html,body{margin:0;min-height:100%}body{font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
-    button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.app.locked{display:none}
-    .login-screen{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 20% 20%,#4b211d 0%,#251c18 56%,#171210 100%)}
-    .login-card{width:min(410px,100%);background:var(--surface);border-radius:24px;padding:30px;box-shadow:0 34px 90px rgba(0,0,0,.42)}
-    .login-brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}.login-card h1{font-size:24px;margin:0}.login-card .login-sub{color:var(--muted);font-size:13px;margin:5px 0 22px;line-height:1.5}
-    .login-error{display:none;background:#fde9e6;color:#9b2822;border-radius:10px;padding:9px 11px;font-size:12px;margin-bottom:12px}.login-error.show{display:block}
-    .login-hint{margin-top:16px;padding:11px 12px;background:var(--amber-soft);border-radius:11px;color:#714a16;font-size:12px;line-height:1.5}
-    .app{display:flex;min-height:100vh}.sidebar{width:250px;position:fixed;inset:0 auto 0 0;background:var(--sidebar);color:#fff;padding:24px 16px;z-index:40;overflow-y:auto}
-    .brand{display:flex;align-items:center;gap:11px;padding:0 7px 24px}.brand-mark{width:44px;height:44px;border-radius:15px;background:var(--red);display:grid;place-items:center;font-size:22px;box-shadow:0 8px 18px rgba(0,0,0,.22)}
-    .brand-title{font-weight:800;font-size:18px;line-height:1.15}.brand-title small{display:block;color:#e4b96e;font-size:10px;text-transform:uppercase;letter-spacing:.17em;margin-bottom:3px}
-    .nav-label{font-size:10px;color:#a7978b;text-transform:uppercase;letter-spacing:.14em;font-weight:700;padding:12px 12px 6px}
-    .nav-btn{width:100%;border:0;background:transparent;color:#d9cec5;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;text-align:left;margin:2px 0;font-weight:600}
-    .nav-btn:hover{background:var(--sidebar-2);color:#fff}.nav-btn.active{background:var(--red);color:#fff}.nav-ic{width:23px;text-align:center;font-size:17px}
-    .local-note{margin:26px 8px 0;border:1px solid #493d35;background:#2f2722;border-radius:14px;padding:12px;color:#c9bbb0;font-size:12px;line-height:1.55}.local-note b{color:#f0c775}
-    .main{margin-left:250px;min-width:0;width:calc(100% - 250px)}.topbar{position:sticky;top:0;z-index:30;background:rgba(245,241,232,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px}
-    .mobile-menu{display:none}.page-title{font-size:20px;font-weight:800}.page-sub{font-size:12px;color:var(--muted);margin-top:2px}.filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .filters select,.filters input{height:38px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:0 10px;color:var(--ink);max-width:180px}.userbox{display:flex;align-items:center;gap:9px;padding-left:8px;border-left:1px solid var(--line)}.user-avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:800}.user-meta{line-height:1.25}.user-name{font-size:12px;font-weight:800}.user-role{font-size:10px;color:var(--muted)}
-    .content{max-width:1480px;padding:28px;margin:auto}.section{display:none}.section.active{display:block;animation:fade .2s ease}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
-    .heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px}.eyebrow{font-size:11px;color:var(--red);font-weight:800;letter-spacing:.15em;text-transform:uppercase}.heading h1{font-size:30px;letter-spacing:-.02em;margin:3px 0 0}.muted{color:var(--muted)}.small{font-size:12px}
-    .grid{display:grid;gap:16px}.grid.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.two{grid-template-columns:minmax(0,1.5fr) minmax(300px,.75fr)}
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}.card-title{font-size:17px;font-weight:800;margin:0}.card-sub{font-size:12px;color:var(--muted);margin-top:4px}
-    .kpi{position:relative;overflow:hidden}.kpi .icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px}.kpi .value{font-size:25px;font-weight:800;letter-spacing:-.03em}.kpi .label{font-size:13px;color:var(--muted);margin-top:5px}.bg-red{background:var(--red-soft);color:var(--red)}.bg-green{background:var(--green-soft);color:var(--green)}.bg-amber{background:var(--amber-soft);color:var(--amber)}.bg-brown{background:#eee5dd;color:#70483a}
-    .btn{border:0;border-radius:11px;padding:9px 14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s}.btn:active{transform:scale(.98)}.btn.primary{background:var(--red);color:#fff}.btn.primary:hover{background:var(--red-dark)}.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}.btn.danger{background:#fde9e6;color:#a22a22}.btn.green{background:var(--green);color:#fff}.btn.sm{padding:6px 9px;font-size:12px}.btn.icon{width:34px;height:34px;padding:0}.btn:disabled{opacity:.5;cursor:not-allowed}
-    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field.full{grid-column:1/-1}.field label{display:block;font-size:12px;font-weight:700;color:#584e46;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 11px;outline:0}.field input:focus,.field select:focus,.field textarea:focus{border-color:#c55644;box-shadow:0 0 0 3px rgba(179,33,32,.08)}.field textarea{min-height:72px;resize:vertical}.help{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
-    .tblwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.table-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.scroller{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;padding:11px 12px;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;background:var(--surface-2);white-space:nowrap}td{padding:11px 12px;border-top:1px solid #ece4da;vertical-align:middle}tr:hover td{background:#fffaf2}.right{text-align:right}.nowrap{white-space:nowrap}.strong{font-weight:800}.positive{color:var(--green)}.negative{color:#b23a31}
-    .pill{display:inline-flex;align-items:center;border-radius:100px;padding:4px 9px;font-size:11px;font-weight:700;white-space:nowrap}.pill.sale{background:var(--green-soft);color:var(--green)}.pill.expense{background:var(--amber-soft);color:#97601a}.pill.general{background:#ece8e4;color:#645a52}.pill.product{background:#fde9e6;color:#9a2c24}.pill.category,.pill.multi{background:#e8eef9;color:#3c6097}
-    .bar-chart{height:250px;display:flex;align-items:flex-end;gap:10px;padding:22px 6px 0;border-bottom:1px solid var(--line);position:relative}.bar-col{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:3px;position:relative}.bar{width:min(21px,38%);border-radius:7px 7px 2px 2px;min-height:2px;transition:.2s}.bar.revenue{background:var(--red)}.bar.expense{background:var(--amber)}.bar-label{position:absolute;bottom:-22px;font-size:10px;color:var(--muted);white-space:nowrap}.chart-legend{display:flex;gap:16px;font-size:12px;margin-top:32px}.legend-dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
-    .menu-layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:18px}.menu-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.menu-tools input{flex:1;min-width:180px;border:1px solid var(--line);border-radius:10px;padding:9px 11px}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;border-radius:100px;padding:7px 11px;font-size:12px;font-weight:700}.chip.active{background:var(--red);border-color:var(--red);color:#fff}
-    .menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:680px;overflow:auto;padding-right:4px}.product-card{border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px}.product-card.selected{border-color:#cb4e3d;background:#fff5ed}.product-name{font-size:13px;font-weight:800;min-height:36px}.product-meta{font-size:11px;color:var(--muted);margin-top:3px}.product-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.product-price{color:var(--red);font-weight:800}.qty{display:flex;gap:5px;align-items:center}.qty span{min-width:18px;text-align:center;font-weight:800}.qty input{width:48px;height:30px;border:1px solid var(--line);border-radius:8px;text-align:center;font-weight:800;background:#fff;padding:2px 4px;outline:0}.qty input:focus{border-color:#c55644;box-shadow:0 0 0 3px rgba(179,33,32,.08)}.qty input::-webkit-outer-spin-button,.qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.qty input[type=number]{-moz-appearance:textfield}.qty button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:#fff;font-weight:900}.qty button.plus{background:var(--red);border-color:var(--red);color:#fff}
-    .order-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;align-self:start;position:sticky;top:92px}.cart{max-height:210px;overflow:auto;margin:12px 0}.cart-row{display:grid;grid-template-columns:24px 1fr auto 25px;gap:7px;align-items:start;padding:7px 0;border-bottom:1px dashed var(--line);font-size:12.5px}.cart-row button{border:0;background:transparent;color:#9b8c82}.order-total{display:flex;justify-content:space-between;align-items:end;border-top:1px dashed #c8b9a8;padding-top:13px;margin:12px 0 14px}.order-total strong{font-size:24px;color:var(--red)}
-    .summary-list{display:grid;gap:9px;margin-top:14px}.summary-row{display:flex;justify-content:space-between;gap:12px;padding-bottom:9px;border-bottom:1px dashed var(--line);font-size:13px}.profit-row{display:flex;align-items:center;gap:10px;margin:10px 0}.profit-rank{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-size:11px;font-weight:800}.profit-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.progress{width:90px;height:7px;border-radius:100px;background:#ece4d9;overflow:hidden}.progress i{display:block;height:100%;background:var(--green);border-radius:100px}
-    .empty{text-align:center;padding:50px 20px;color:var(--muted)}.empty .big{font-size:34px;margin-bottom:8px}.notice{padding:12px 14px;border-radius:12px;background:var(--amber-soft);color:#744b14;font-size:12px;line-height:1.5;border:1px solid #f0ddb7;margin-bottom:14px}
-    .modal-bg{display:none;position:fixed;inset:0;background:rgba(26,19,15,.62);z-index:100;align-items:center;justify-content:center;padding:18px}.modal-bg.show{display:flex}.modal{background:var(--surface);border-radius:20px;width:min(640px,100%);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.28)}.modal-top{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-body{padding:20px}.close{border:0;background:#eee6dc;width:34px;height:34px;border-radius:50%;font-size:18px}
-    .receipt{max-width:500px;margin:auto;background:#fffdf8;padding:10px}.receipt-brand{text-align:center}.receipt-brand h2{margin:3px 0;color:var(--red)}.receipt-line{border-top:1px dashed #aa9b8d;margin:14px 0}.receipt-info{display:grid;grid-template-columns:120px 1fr;gap:7px;font-size:13px}.receipt-items{width:100%;font-size:12.5px}.receipt-items td,.receipt-items th{padding:7px 4px;background:transparent}.receipt-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-top:10px}.success-badge{text-align:center;color:var(--green);font-weight:800;margin:10px 0 16px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-    .settings-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.6fr);gap:16px}.employee-chip{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);padding:9px 10px;border-radius:11px;margin-top:7px}.file-label{position:relative;overflow:hidden}.file-label input{position:absolute;inset:0;opacity:0;cursor:pointer}.account-status{display:flex;align-items:center;gap:6px}.status-dot{width:8px;height:8px;border-radius:50%;background:#aaa}.status-dot.on{background:#28a36a}.role-admin{background:#fde2dd;color:#902820}.role-staff{background:#e5efe9;color:#2f684d}.filter-note{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-5px 0 16px;padding:10px 13px;background:#fff8ea;border:1px solid #ead8b8;border-radius:12px;font-size:12px;color:#704a1d}.customer-picker{margin:12px 0;padding:12px;background:var(--surface-2);border:1px dashed var(--line);border-radius:12px}.check-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)}.check-row input{width:17px;height:17px}.multi-checks{max-height:230px;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}.multi-checks label{display:flex;align-items:flex-start;gap:7px;padding:7px;border-radius:8px;background:var(--surface-2);font-size:12px;line-height:1.35}.multi-checks input{width:16px;height:16px;margin-top:1px;flex:none}.draft-tag{display:inline-flex;padding:5px 9px;border-radius:100px;background:var(--amber-soft);color:#7a5018;font-size:11px;font-weight:800}
-    .new-order-alert{display:none;position:fixed;right:22px;top:86px;z-index:450;width:min(390px,calc(100vw - 28px));background:#fffdf8;border:2px solid var(--red);border-radius:18px;padding:18px;box-shadow:0 20px 55px rgba(61,41,27,.28)}.new-order-alert.show{display:block;animation:alertPop .25s ease}.new-order-alert h3{margin:0 0 6px;color:var(--red);font-size:20px}.new-order-alert .alert-total{font-size:22px;font-weight:900;color:var(--red);margin-top:10px}.new-order-alert .alert-actions{display:flex;gap:8px;margin-top:14px}.new-order-alert .alert-actions .btn{flex:1}.new-order-badge{display:none;min-width:21px;height:21px;padding:0 6px;border-radius:100px;background:#ffd54f;color:#3b2a00;align-items:center;justify-content:center;font-size:11px;font-weight:900;margin-left:auto}.new-order-badge.show{display:inline-flex}@keyframes alertPop{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}
-    .toast{position:fixed;right:22px;bottom:22px;z-index:200;background:#29231e;color:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 12px 30px rgba(0,0,0,.2);font-size:13px;transform:translateY(30px);opacity:0;pointer-events:none;transition:.2s}.toast.show{transform:none;opacity:1}
-    .table-session-box{margin:0 0 14px;padding:14px;border:1px solid #e3c9a0;background:#fff8e9;border-radius:14px}.table-session-box h3{margin:0 0 6px;font-size:16px}.table-session-box p{margin:5px 0;color:#6f5a43;font-size:12px;line-height:1.5}.table-session-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.table-lock{padding:10px 12px;border-radius:10px;background:var(--green-soft);color:var(--green);font-weight:800;text-align:center;margin-bottom:12px}.customer-current-order{margin:0 0 14px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.customer-current-head{padding:12px 14px;background:var(--surface-2);display:flex;justify-content:space-between;gap:10px;align-items:center}.customer-current-items{padding:8px 14px}.customer-current-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:12px}.customer-current-row:last-child{border-bottom:0}.customer-current-total{padding:11px 14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-weight:900;color:var(--red)}.sync-wait{padding:14px;border:1px solid #d9d3c9;background:#fff;border-radius:14px;margin-bottom:14px;text-align:center;color:var(--muted);font-size:12px}
-    @media(max-width:1100px){.grid.kpis{grid-template-columns:repeat(2,1fr)}.grid.two,.settings-grid{grid-template-columns:1fr}.menu-layout{grid-template-columns:1fr}.order-panel{position:static}.menu-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:760px){body{font-size:14px}.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.main{margin-left:0;width:100%}.mobile-menu{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);border-radius:10px;background:#fff}.topbar{padding:12px 14px}.topbar-left{display:flex;align-items:center;gap:10px}.filters{position:absolute;top:65px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);padding:9px 14px;justify-content:flex-start;overflow:auto;flex-wrap:nowrap}.filters select{min-width:130px}.user-meta{display:none}.userbox{padding-left:0;border-left:0}.content{padding:75px 14px 28px}.heading{align-items:flex-start;flex-direction:column}.heading h1{font-size:24px}.grid.kpis{grid-template-columns:1fr 1fr}.kpi .value{font-size:19px}.menu-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.card{padding:15px}.menu-layout{display:block}.order-panel{margin-top:14px}.hide-mobile{display:none}.modal-bg{padding:8px}.modal{border-radius:16px}.receipt-info{grid-template-columns:95px 1fr}.multi-checks{grid-template-columns:1fr}}
-    @media(max-width:430px){.grid.kpis{grid-template-columns:1fr}.filters #productFilter{display:none}}
-    @media print{body *{visibility:hidden!important}.modal-bg.show,.modal-bg.show *{visibility:visible!important}.modal-bg.show{position:absolute;inset:0;background:#fff;padding:0;display:block}.modal{box-shadow:none;width:100%;max-height:none}.modal-top,.modal-actions{display:none!important}.receipt{padding:0}.receipt-items th,.receipt-items td{color:#000!important}}
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D Print Manager · Firebase</title>
+<style>
+:root{--nav:#112a46;--blue:#1769e0;--bg:#f4f7fb;--line:#e4e9f1;--muted:#778198;--txt:#172238;--card:#fff}
+*{box-sizing:border-box} body{margin:0;font:14px/1.4 Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+.app{min-height:100vh;display:grid;grid-template-columns:205px 1fr}
+aside{background:var(--nav);color:#fff;padding:18px 12px;position:sticky;top:0;height:100vh}
+.logo{font-size:18px;font-weight:800;padding:4px 10px 20px}.logo small{display:block;font-size:10px;font-weight:500;opacity:.65}
+.menu{display:grid;gap:6px}.menu button{border:0;background:transparent;color:#c9d5e4;padding:11px 12px;border-radius:9px;text-align:left;cursor:pointer;font-weight:650}.menu button.active,.menu button:hover{background:#1d4d80;color:#fff}
+main{min-width:0}.head{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 22px;position:sticky;top:0;z-index:5}
+.search{flex:1;max-width:540px;position:relative}.search input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;outline:none}
+.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:750;cursor:pointer}.primary{background:var(--blue);color:#fff}.soft{background:#eef3fa;color:#41506a}.danger{background:#fee9e9;color:#b42318}
+.content{padding:20px 22px 45px;max-width:1450px}.page-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.page-title h1{font-size:23px;margin:0}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.chip{background:#fff;border:1px solid var(--line);padding:7px 11px;border-radius:8px;cursor:pointer}.chip.active{background:#e8f0ff;border-color:#bcd0f5;color:#1457b8;font-weight:750}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 2px 9px rgba(30,45,70,.04);position:relative}
+.pic{aspect-ratio:1/1;background:#edf1f6;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}.pic img{width:100%;height:100%;object-fit:cover}.ph{font-size:45px}
+.cardbody{padding:10px}.name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}.tag{font-size:10px;padding:3px 6px;border-radius:5px;background:#eef3ff;color:#4262a8}.source{background:#f1f3f6;color:#667085}
+.money{display:flex;justify-content:space-between;gap:8px;margin-top:9px;font-size:12px}.sell{font-weight:800;color:#137333}.cost{color:#8a5a00}
+.card-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.card-actions button{padding:7px 8px;font-size:11px}
+.pastebox{border:1px dashed #b9c5d6;border-radius:10px;padding:13px;text-align:center;background:#f8fafc;color:#64748b;cursor:pointer}.pastebox:focus{outline:2px solid #bcd0f5}.pastebox.has{border-style:solid;color:#137333;background:#f1fbf4}
+.order-list{display:grid;gap:12px}.order{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px}.orderhead{display:flex;justify-content:space-between;gap:10px}.ordername{font-size:17px;font-weight:800}.note{color:#657087;white-space:pre-wrap;margin:6px 0 12px}.items{display:flex;gap:8px;flex-wrap:wrap}.item{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:7px 9px;background:#fafcff}.item img{width:38px;height:38px;border-radius:7px;object-fit:cover}.qty{font-weight:800;color:var(--blue)}
+.empty{padding:55px;text-align:center;background:#fff;border:1px dashed #cbd4e1;border-radius:12px;color:var(--muted)}
+dialog{width:min(620px,94vw);border:0;border-radius:16px;padding:0;box-shadow:0 25px 70px #0004}dialog::backdrop{background:#14223899}.modal{padding:22px}.modal h2{margin:0 0 17px}.form{display:grid;gap:12px}.form label{font-size:12px;font-weight:750;color:#526078}.form input,.form textarea{width:100%;margin-top:5px;padding:10px;border:1px solid #dce3ed;border-radius:9px;font:inherit}.form textarea{min-height:75px}.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
+.preview{display:flex;gap:12px;align-items:center;padding:10px;background:#f6f8fb;border-radius:10px}.preview img{width:72px;height:72px;object-fit:cover;border-radius:9px;background:#e8edf4}.hint{font-size:11px;color:#7b8498}
+.picker{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:10px}.pick{display:grid;grid-template-columns:1fr 72px;gap:8px;align-items:center;padding:8px;border-bottom:1px solid var(--line)}.pick:last-child{border:0}.pick label{display:flex;align-items:center;gap:8px}.pick img{width:38px;height:38px;object-fit:cover;border-radius:7px}.pick input[type=number]{width:65px;margin:0}
+.hidden{display:none!important}.status{margin-left:auto;font-size:11px;color:#69758a}
+@media(max-width:750px){.app{grid-template-columns:1fr}aside{height:auto;position:static;padding:9px}.logo{padding:5px 8px}.menu{grid-template-columns:1fr 1fr}.menu button{padding:9px}.head{top:0;padding:0 10px}.content{padding:15px 10px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.status{display:none}}
+</style>
 </head>
 <body>
-  <div class="login-screen" id="loginScreen">
-    <form class="login-card" id="loginForm">
-      <div class="login-brand"><div class="brand-mark">♨</div><div><div class="eyebrow">Nem nướng</div><h1>Dũng Hiền</h1></div></div>
-      <p class="login-sub">Đăng nhập để nhập đơn và sử dụng đúng quyền được cấp.</p>
-      <div class="login-error" id="loginError">Tên đăng nhập hoặc mật khẩu chưa đúng.</div>
-      <div class="field"><label>Tên đăng nhập</label><input id="loginUsername" autocomplete="username" required placeholder="Nhập tên đăng nhập"></div>
-      <div class="field" style="margin-top:13px"><label>Mật khẩu</label><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Nhập mật khẩu"></div>
-      <button class="btn primary" style="width:100%;margin-top:18px" type="submit">Đăng nhập</button>
-      <div class="login-hint"><b>Tài khoản Admin mặc định lần đầu:</b><br>Tên đăng nhập: <b>admin</b> · Mật khẩu: <b>123456</b><br>Hãy đổi mật khẩu sau khi đăng nhập.</div>
-    </form>
-  </div>
+<div class="app">
+<aside>
+ <div class="logo">⬡ 3D Print <span style="color:#5fa4ff">Manager</span><small>Model & Order Library</small></div>
+ <div class="menu"><button id="mModels" class="active" onclick="page('models')">▦ &nbsp; Kho mẫu</button><button id="mOrders" onclick="page('orders')">▣ &nbsp; Đơn hàng</button></div>
+</aside>
+<main>
+ <div class="head">
+   <div class="search"><input id="search" placeholder="🔎  Tìm mẫu theo tên, tag, nguồn..." oninput="render()"></div>
+   <button id="addBtn" class="btn primary" onclick="addCurrent()">＋ Thêm mẫu</button>
+   <span class="status" id="dbStatus">● Đang kết nối Firebase...</span>
+ </div>
+ <div class="content">
+  <section id="modelsPage">
+   <div class="page-title"><h1>Kho mẫu</h1><span id="countModels" class="hint"></span></div>
+   <div id="filters" class="filters"></div><div id="grid" class="grid"></div>
+  </section>
+  <section id="ordersPage" class="hidden">
+   <div class="page-title"><h1>Đơn hàng</h1><span id="countOrders" class="hint"></span></div><div id="orders" class="order-list"></div>
+  </section>
+ </div>
+</main>
+</div>
 
-  <div class="app locked" id="appShell">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand"><div class="brand-mark">♨</div><div class="brand-title"><small>Nem nướng</small>Dũng Hiền</div></div>
-      <div class="nav-label">Vận hành</div>
-      <button class="nav-btn active" data-section="dashboard"><span class="nav-ic">▦</span>Tổng quan <span class="new-order-badge" id="newOrderBadge">0</span></button>
-      <button class="nav-btn" data-section="neworder"><span class="nav-ic">🛒</span>Tạo đơn mới</button>
-      <button class="nav-btn" data-section="expenses"><span class="nav-ic">↘</span>Ghi nhận chi phí</button>
-      <button class="nav-btn admin-only" data-section="customers"><span class="nav-ic">♥</span>Quản lý khách hàng</button>
-      <div class="nav-label">Thiết lập</div>
-      <button class="nav-btn admin-only" data-section="staff"><span class="nav-ic">♟</span>Quản lý nhân viên</button>
-      <button class="nav-btn admin-only" data-section="users"><span class="nav-ic">🔐</span>Quản lý người dùng</button>
-      <button class="nav-btn admin-only" data-section="settings"><span class="nav-ic">⚙</span>Cấu hình & dữ liệu</button>
-    </aside>
+<dialog id="modelDlg"><div class="modal"><h2 id="modelTitle">Thêm mẫu</h2>
+<form id="modelForm" class="form" onsubmit="saveModel(event)">
+<input id="modelId" type="hidden">
+<label>Link mẫu *<input id="url" required type="url" placeholder="https://makerworld.com/..."></label>
+<div class="hint">V2 đã chuẩn bị trường ảnh URL. Tự đọc og:image trực tiếp từ MakerWorld cần Cloud Function/proxy vì CORS.</div>
+<label>Tên mẫu *<input id="name" required placeholder="Tên sản phẩm"></label>
+<label>Phân loại *<input id="category" required list="cats" placeholder="Móc khóa, Đồ chơi, Gia dụng..."><datalist id="cats"></datalist></label>
+<label>Giá bán (VNĐ)<input id="price" type="number" min="0" step="1000" placeholder="Ví dụ: 50000"></label>
+<label>Chi phí (VNĐ)<input id="cost" type="number" min="0" step="1000" placeholder="Ví dụ: 18000"></label>
+<label>URL ảnh<input id="image" type="text" placeholder="https://...jpg" oninput="showPreview()"></label>
+<div id="pasteBox" class="pastebox" tabindex="0">📋 Click vào đây rồi Ctrl+V để dán ảnh từ clipboard<br><span class="hint">Ảnh dán sẽ được lưu trực tiếp vào dữ liệu dưới dạng Data URL.</span></div>
+<div class="preview"><img id="prev" alt=""><div><b>Xem trước ảnh</b><div id="imgMode" class="hint">Có thể dùng URL hoặc dán trực tiếp ảnh.</div></div></div>
+<label>Ghi chú<textarea id="note" placeholder="Màu, kích thước, lưu ý khi in..."></textarea></label>
+</form><div class="modalfoot"><button class="btn soft" onclick="modelDlg.close()">Hủy</button><button class="btn primary" onclick="modelForm.requestSubmit()">Lưu mẫu</button></div></div></dialog>
 
-    <main class="main">
-      <header class="topbar">
-        <div class="topbar-left"><button class="mobile-menu" id="mobileMenu">☰</button><div><div class="page-title" id="pageTitle">Tổng quan cửa hàng</div><div class="page-sub" id="pageSub">Doanh thu, chi phí và lợi nhuận</div></div></div>
-        <div class="filters">
-          <select id="periodFilter" aria-label="Thời gian"><option value="today">Hôm nay</option><option value="7days">7 ngày gần nhất</option><option value="month" selected>Tháng này</option><option value="custom">Từ ngày đến ngày</option><option value="all">Toàn bộ</option></select>
-          <input type="date" id="dateFrom" class="hidden" aria-label="Từ ngày">
-          <input type="date" id="dateTo" class="hidden" aria-label="Đến ngày">
-          <select id="categoryFilter" aria-label="Nhóm mặt hàng"><option value="all">Tất cả nhóm hàng</option></select>
-          <select id="productFilter" aria-label="Mặt hàng"><option value="all">Tất cả mặt hàng</option></select>
-          <div class="userbox"><div class="user-avatar" id="userAvatar">A</div><div class="user-meta"><div class="user-name" id="currentUserName">Admin</div><div class="user-role" id="currentUserRole">Quản trị viên</div></div><button class="btn ghost sm" onclick="logout()">Thoát</button></div>
-        </div>
-      </header>
+<dialog id="orderDlg"><div class="modal"><h2 id="orderTitle">Thêm đơn hàng</h2>
+<form id="orderForm" class="form" onsubmit="saveOrder(event)"><input id="orderId" type="hidden">
+<label>Tên đơn *<input id="orderName" required placeholder="Tên khách / tên đơn"></label>
+<label>Ghi chú<textarea id="orderNote" placeholder="Thông tin khách, màu, deadline, yêu cầu..."></textarea></label>
+<label>Chọn mẫu từ Kho mẫu</label><div id="picker" class="picker"></div>
+</form><div class="modalfoot"><button class="btn soft" onclick="orderDlg.close()">Hủy</button><button class="btn primary" onclick="orderForm.requestSubmit()">Lưu đơn</button></div></div></dialog>
 
-      <div class="content">
-        <section class="section active" id="dashboard"></section>
-        <section class="section" id="neworder"></section>
-        <section class="section" id="expenses"></section>
-        <section class="section" id="customers"></section>
-        <section class="section" id="staff"></section>
-        <section class="section" id="users"></section>
-        <section class="section" id="settings"></section>
-      </div>
-    </main>
-  </div>
+<script type="module">
+/* ================= FIREBASE CONNECTED =================
+  Hiện file chạy ngay bằng localStorage.
+  Khi có Firebase project, đặt USE_FIREBASE=true và điền firebaseConfig.
+  Sau đó thêm Firebase Web SDK (module) hoặc tách JS ra file riêng.
+  Collection đề xuất:
+    models/{id}: name, category, url, image, price, cost, note, createdAt, updatedAt
+    orders/{id}: name, note, items:[{modelId,qty}], createdAt, updatedAt
+=================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, collection, getDocs, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-  <div class="modal-bg" id="receiptModal"><div class="modal"><div class="modal-top"><div><b>Kết quả tạo đơn</b><div class="small muted" id="receiptStatusText">Kiểm tra thông tin đơn hàng</div></div><button class="close" onclick="closeReceipt()">×</button></div><div class="modal-body" id="receiptBody"></div></div></div>
-  <div class="new-order-alert" id="newOrderAlert"><h3>🔔 CÓ ĐƠN HÀNG MỚI!</h3><div id="newOrderAlertBody"></div><div class="alert-actions"><button class="btn primary" id="viewNewOrderBtn">Xem đơn</button><button class="btn ghost" onclick="ackNewOrder()">Đã nhận</button></div></div>
-  <div class="toast" id="toast"></div>
+const firebaseConfig={
+  apiKey:"AIzaSyBNtTfB3Q239OCfDg3NZ2bNijIuYqpGiyc",
+  authDomain:"in3dtanmai.firebaseapp.com",
+  projectId:"in3dtanmai",
+  storageBucket:"in3dtanmai.firebasestorage.app",
+  messagingSenderId:"48265295204",
+  appId:"1:48265295204:web:29d2f56d976158cdb87671",
+  measurementId:"G-LSSJYMST0T"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
 
-  <script>
-  'use strict';
-  const STORAGE_KEY='nemNuongDungHien_v4',SESSION_KEY='nemNuongDungHien_currentUser';
-  const PRODUCTS=[
-    ['nem-lui','Nem lụi Nha Trang','Đồ ăn',40000],['pho-tron','Phở trộn nem nướng','Đồ ăn',45000],['muc-nho','Mực nướng nhỏ','Đồ ăn',110000],['muc-to','Mực nướng to','Đồ ăn',200000],['ca-bo','Cá bò','Đồ ăn',15000],['ca-chi','Cá chỉ (6 con)','Đồ ăn',30000],['thit-xien','Thịt xiên nướng','Đồ ăn',12000],['nem-nuong','Nem nướng','Đồ ăn',7000],['nem-ran','Nem rán','Đồ ăn',7000],['mia-nuong','Mía nướng','Đồ ăn',30000],['ga-vien','Gà viên','Đồ ăn',30000],['ga-vien-pm','Gà viên + phô mai','Đồ ăn',35000],['khoai-tay','Khoai tây','Đồ ăn',45000],['khoai-tay-top','Khoai tây + topping','Đồ ăn',50000],['khoai-lang','Khoai lang','Đồ ăn',45000],['khoai-lang-top','Khoai lang + topping','Đồ ăn',50000],['banh-bao','Bánh bao chiên chấm sữa','Đồ ăn',30000],['xuc-xich','Xúc xích','Đồ ăn',10000],
-    ['xoai','Xoài','Hoa quả',25000],['cu-dau','Củ đậu','Hoa quả',25000],['dua-chuot','Dưa chuột','Hoa quả',20000],['dia-mix','Đĩa hoa quả mix','Hoa quả',30000],
-    ['nuoc-ngo-ly','Nước ngô ly','Nước',5000],['nuoc-ngo-au','Nước ngô âu','Nước',20000],['tra-mia-ly','Trà mía ly','Nước',15000],['tra-mia-au','Trà mía âu','Nước',55000],['tra-quat','Trà quất','Nước',15000],['tra-chanh','Trà chanh','Nước',15000],['tra-dao','Trà đào','Nước',15000],['tra-da','Trà đá','Nước',5000],['lavie','Lavie','Nước',7000],['coca','Coca / Fanta','Nước',15000],['bia','Bia','Nước',15000],['ruou','Rượu','Nước',70000],
-    ['huong-duong','Hướng dương','Đồ nhắm',10000],['bo-kho','Bò khô','Đồ nhắm',25000],['ga-kho','Gà khô','Đồ nhắm',25000],['lac-rang','Lạc rang','Đồ nhắm',10000]
-  ].map(x=>({id:x[0],name:x[1],category:x[2],price:x[3],cost:0}));
-  const defaultState=()=>({products:PRODUCTS.map(p=>({...p})),employees:['Chủ quán','Nhân viên 1'],users:[{id:'admin',username:'admin',password:'123456',role:'admin',employeeName:'Chủ quán',active:true}],customers:[],orders:[],expenses:[],sequence:1});
-  let state=loadState(),currentUser=null,activeSection='dashboard',cart={},menuCategory='all',menuSearch='',lastOrder=null,pendingOrder=null,editingOrderId=null,editingExpenseId=null,orderDraft={};
-  const URL_PARAMS=new URLSearchParams(location.search);
-  const customerTableParam=(URL_PARAMS.get('table')||'').trim().toUpperCase();
-  let customerTableChoice=null; // null=chưa chọn khi bàn có phiên mở; 'add'=gọi thêm; 'new'=khách mới
-  let firebaseRemoteReady=false;
-  function normalizeTable(v){const raw=String(v||'').trim().toUpperCase();if(!raw)return '';const m=raw.match(/(?:BÀN\s*|BAN\s*|B)?0*(\d{1,2})$/i);return m?'B'+String(Number(m[1])).padStart(2,'0'):raw}
-  function activeTableOrder(table){const t=normalizeTable(table);return state.orders.filter(o=>normalizeTable(o.tableAddress)===t&&o.status==='Chưa thanh toán'&&o.tableSessionActive!==false).sort((a,b)=>Number(b.id)-Number(a.id))[0]||null}
+const $=id=>document.getElementById(id);
+const el={
+ modelForm:$('modelForm'), modelId:$('modelId'), modelTitle:$('modelTitle'),
+ url:$('url'), modelName:$('name'), category:$('category'), image:$('image'),
+ price:$('price'), cost:$('cost'), note:$('note'), prev:$('prev'),
+ pasteBox:$('pasteBox'), imgMode:$('imgMode'), modelDlg:$('modelDlg')
+};
+const KM='print3d_models_v2', KO='print3d_orders_v2';
+let models=[];
+let orderData=[];
+const localModels=JSON.parse(localStorage.getItem(KM)||localStorage.getItem('print3d_models_v1')||'[]');
+const localOrders=JSON.parse(localStorage.getItem(KO)||localStorage.getItem('print3d_orders_v1')||'[]');
+let current='models', active='Tất cả';
 
-  function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('nemNuongDungHien_v3')||localStorage.getItem('nemNuongDungHien_v2');if(!raw)return defaultState();const data=JSON.parse(raw),base=defaultState(),users=Array.isArray(data.users)&&data.users.length?data.users:base.users;return{...base,...data,products:base.products.map(p=>({...p,...(data.products||[]).find(x=>x.id===p.id)})),employees:Array.isArray(data.employees)&&data.employees.length?data.employees:base.employees,users,customers:Array.isArray(data.customers)?data.customers:[]};}catch(e){console.error(e);return defaultState();}}
-  function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(window.firebaseSaveState)window.firebaseSaveState(state).catch(e=>console.error('Firebase save:',e));}
-  window.getAppStateForFirebase=()=>JSON.parse(JSON.stringify(state));
-  window.markFirebaseReady=()=>{firebaseRemoteReady=true;if(customerMode&&activeSection==='neworder')renderNewOrder()};
-  let firebaseBaselineReady=false,knownRemoteOrderIds=new Set(),knownRemoteAddAt=new Map(),unreadQrOrders=[];
-  window.applyFirebaseState=data=>{if(!data||typeof data!=='object')return;firebaseRemoteReady=true;const incomingOrders=Array.isArray(data.orders)?data.orders:[];if(firebaseBaselineReady&&!customerMode&&currentUser){const fresh=incomingOrders.filter(o=>!knownRemoteOrderIds.has(String(o.id))&&o.employee==='Khách tự đặt');fresh.slice().reverse().forEach(queueNewQrOrder);const adds=incomingOrders.filter(o=>knownRemoteOrderIds.has(String(o.id))&&o.employee==='Khách tự đặt'&&o.lastAddedAt&&knownRemoteAddAt.get(String(o.id))!==o.lastAddedAt);adds.slice().reverse().forEach(o=>queueNewQrOrder({...o,_qrAction:'add',items:o.lastAddedItems||[]}))}knownRemoteOrderIds=new Set(incomingOrders.map(o=>String(o.id)));knownRemoteAddAt=new Map(incomingOrders.filter(o=>o.lastAddedAt).map(o=>[String(o.id),o.lastAddedAt]));firebaseBaselineReady=true;const base=defaultState();state={...base,...data,products:Array.isArray(data.products)?data.products:base.products,employees:Array.isArray(data.employees)&&data.employees.length?data.employees:base.employees,users:Array.isArray(data.users)&&data.users.length?data.users:base.users,customers:Array.isArray(data.customers)?data.customers:[],orders:incomingOrders,expenses:Array.isArray(data.expenses)?data.expenses:[]};localStorage.setItem(STORAGE_KEY,JSON.stringify(state));initFilters();render();};
-  const money=n=>new Intl.NumberFormat('vi-VN').format(Math.round(Number(n)||0))+' đ';
-  const num=n=>new Intl.NumberFormat('vi-VN').format(Math.round(Number(n)||0));
-  const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
-  const dateVN=s=>s?new Intl.DateTimeFormat('vi-VN').format(new Date(s+'T00:00:00')):'';
-  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-  function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600)}
-  function product(id){return state.products.find(p=>p.id===id)}
-  function inPeriod(date){const mode=document.getElementById('periodFilter').value;if(mode==='all')return true;if(mode==='custom'){let from=document.getElementById('dateFrom').value,to=document.getElementById('dateTo').value;if(from&&to&&from>to)[from,to]=[to,from];return(!from||date>=from)&&(!to||date<=to)}const now=new Date(today()+'T00:00:00'),d=new Date(date+'T00:00:00');if(mode==='today')return date===today();if(mode==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();const diff=(now-d)/86400000;return diff>=0&&diff<7}
-  function selectedFilters(){return{category:document.getElementById('categoryFilter').value,productId:document.getElementById('productFilter').value}}
-  function filteredOrders(){return state.orders.filter(o=>inPeriod(o.date))}
-  function filteredExpenses(){return state.expenses.filter(e=>inPeriod(e.date))}
-
-  function calculateRows(orders=filteredOrders(),expenses=filteredExpenses()){
-    const rows=new Map(state.products.map(p=>[p.id,{product:p,qty:0,revenue:0,inputCost:0,otherExpense:0,profit:0}]));
-    orders.forEach(o=>o.items.forEach(i=>{const r=rows.get(i.productId);if(r){r.qty+=i.qty;r.revenue+=i.qty*i.price}}));
-    const addAllocated=(e,group)=>{if(!group.length)return;const rev=group.reduce((s,r)=>s+r.revenue,0),isInput=e.category==='Nguyên liệu';group.forEach(r=>{const amount=rev?e.amount*r.revenue/rev:e.amount/group.length;if(isInput)r.inputCost+=amount;else r.otherExpense+=amount})};
-    expenses.forEach(e=>{
-      if(e.targetType==='product'){const r=rows.get(e.targetId);if(r){if(e.category==='Nguyên liệu')r.inputCost+=e.amount;else r.otherExpense+=e.amount}}
-      else if(e.targetType==='multi'){const ids=Array.isArray(e.targetIds)?e.targetIds:[];addAllocated(e,ids.map(id=>rows.get(id)).filter(Boolean))}
-      else if(e.targetType==='category'){addAllocated(e,[...rows.values()].filter(r=>r.product.category===e.targetId))}
-      else if(e.targetType==='general'){addAllocated(e,[...rows.values()])}
-    });
-    const all=[...rows.values()];all.forEach(r=>{r.costPerUnit=r.qty?r.inputCost/r.qty:0;r.profit=r.revenue-r.inputCost-r.otherExpense;r.margin=r.revenue?r.profit/r.revenue*100:0});
-    return all;
-  }
-  function viewRows(rows=calculateRows()){const f=selectedFilters();return rows.filter(r=>(f.category==='all'||r.product.category===f.category)&&(f.productId==='all'||r.product.id===f.productId))}
-  function totals(){const rows=viewRows();return{revenue:rows.reduce((s,r)=>s+r.revenue,0),inputCost:rows.reduce((s,r)=>s+r.inputCost,0),otherExpense:rows.reduce((s,r)=>s+r.otherExpense,0),profit:rows.reduce((s,r)=>s+r.profit,0),qty:rows.reduce((s,r)=>s+r.qty,0)}}
-
-  const PAGES={dashboard:['Tổng quan cửa hàng','Doanh thu, chi phí, lợi nhuận và đơn hàng'],neworder:['Tạo đơn mới','Ghi nhận khách hàng và nhân viên nhập đơn'],expenses:['Ghi nhận chi phí','Gắn chi phí với nhóm hàng hoặc từng mặt hàng'],customers:['Quản lý khách hàng','Lưu thông tin khách hàng thân thiết'],staff:['Quản lý nhân viên','Thêm hoặc ngừng sử dụng nhân viên nhập đơn'],users:['Quản lý người dùng','Cấp tài khoản và mật khẩu cho nhân viên'],settings:['Cấu hình & dữ liệu','Giá bán, cost thực tế và sao lưu']};
-  const STAFF_SECTIONS=['dashboard','neworder','expenses'];
-  function isAdmin(){return currentUser&&currentUser.role==='admin'}
-  function requireAdmin(){if(isAdmin())return true;toast('Bạn không có quyền thực hiện thao tác này');return false}
-  function go(id){if(!currentUser)return;if(!isAdmin()&&!STAFF_SECTIONS.includes(id)){toast('Tài khoản nhân viên không có quyền truy cập mục này');id='dashboard'}activeSection=id;document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.section===id));document.getElementById('pageTitle').textContent=PAGES[id][0];document.getElementById('pageSub').textContent=PAGES[id][1];document.getElementById('sidebar').classList.remove('open');render()}
-  document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.section)));
-  document.getElementById('mobileMenu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
-
-  function applySession(user){currentUser=user;sessionStorage.setItem(SESSION_KEY,String(user.id));document.getElementById('loginScreen').classList.add('hidden');document.getElementById('appShell').classList.remove('locked');document.querySelectorAll('.admin-only').forEach(el=>el.classList.toggle('hidden',user.role!=='admin'));document.getElementById('currentUserName').textContent=user.employeeName||user.username;document.getElementById('currentUserRole').textContent=user.role==='admin'?'Quản trị viên':'Nhân viên vận hành';document.getElementById('userAvatar').textContent=(user.employeeName||user.username).trim().charAt(0).toUpperCase();go('dashboard')}
-  function login(username,password){const user=state.users.find(u=>u.active!==false&&u.username.toLowerCase()===username.toLowerCase()&&u.password===password);if(!user)return false;applySession(user);return true}
-  function logout(){currentUser=null;sessionStorage.removeItem(SESSION_KEY);document.getElementById('appShell').classList.add('locked');document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('loginPassword').value='';document.getElementById('loginUsername').focus()}
-  document.getElementById('loginForm').addEventListener('submit',e=>{e.preventDefault();const ok=login(document.getElementById('loginUsername').value.trim(),document.getElementById('loginPassword').value);document.getElementById('loginError').classList.toggle('show',!ok)});
-  window.logout=logout;
-
-  function initFilters(){const cats=[...new Set(state.products.map(p=>p.category))],now=today();document.getElementById('categoryFilter').innerHTML='<option value="all">Tất cả nhóm hàng</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');document.getElementById('dateFrom').value=document.getElementById('dateFrom').value||now.slice(0,8)+'01';document.getElementById('dateTo').value=document.getElementById('dateTo').value||now;updateProductFilter();toggleCustomDates()}
-  function updateProductFilter(){const cat=document.getElementById('categoryFilter').value,el=document.getElementById('productFilter'),old=el.value;const list=state.products.filter(p=>cat==='all'||p.category===cat);el.innerHTML='<option value="all">Tất cả mặt hàng</option>'+list.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');if(list.some(p=>p.id===old))el.value=old}
-  function toggleCustomDates(){const custom=document.getElementById('periodFilter').value==='custom';document.getElementById('dateFrom').classList.toggle('hidden',!custom);document.getElementById('dateTo').classList.toggle('hidden',!custom)}
-  document.getElementById('periodFilter').onchange=()=>{toggleCustomDates();render()};document.getElementById('dateFrom').onchange=render;document.getElementById('dateTo').onchange=render;document.getElementById('categoryFilter').onchange=()=>{updateProductFilter();render()};document.getElementById('productFilter').onchange=render;
-
-  function heading(eye,title,action=''){return`<div class="heading"><div><div class="eyebrow">${eye}</div><h1>${title}</h1></div>${action}</div>`}
-  function kpi(icon,label,value,tone,sub){return`<div class="card kpi"><div class="icon ${tone}">${icon}</div><div class="value">${value}</div><div class="label">${label}</div><div class="small muted" style="margin-top:8px">${sub}</div></div>`}
-  function periodDates(){const mode=document.getElementById('periodFilter').value,now=today(),iso=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');let start=now,end=now;if(mode==='7days'){const d=new Date(now+'T00:00:00');d.setDate(d.getDate()-6);start=iso(d)}else if(mode==='month'){start=now.slice(0,8)+'01'}else if(mode==='custom'){start=document.getElementById('dateFrom').value||now;end=document.getElementById('dateTo').value||now;if(start>end)[start,end]=[end,start]}else if(mode==='all'){const keys=[...new Set([...state.orders.map(o=>o.date),...state.expenses.map(e=>e.date)])].sort();if(keys.length){start=keys[0];end=keys[keys.length-1]}}let first=new Date(start+'T00:00:00'),last=new Date(end+'T00:00:00');if((last-first)/86400000>30){first=new Date(last);first.setDate(first.getDate()-30)}const out=[];while(first<=last){out.push(new Date(first));first.setDate(first.getDate()+1)}return out}
-  function renderDashboard(){
-    const t=totals(),days=[],orders=filteredOrders().filter(relevantOrder).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),f=selectedFilters(),categoryName=f.category==='all'?'Tất cả nhóm hàng':f.category,productName=f.productId==='all'?'Tất cả mặt hàng':(product(f.productId)?.name||'Mặt hàng'),range=periodDates();
-    range.forEach(d=>{const key=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-'),dayRows=viewRows(calculateRows(state.orders.filter(o=>o.date===key),state.expenses.filter(e=>e.date===key))),revenue=dayRows.reduce((s,r)=>s+r.revenue,0),expense=dayRows.reduce((s,r)=>s+r.inputCost+r.otherExpense,0);days.push({label:d.getDate()+'/'+(d.getMonth()+1),revenue,expense})});
-    const max=Math.max(1,...days.map(d=>Math.max(d.revenue,d.expense))),totalExpense=t.inputCost+t.otherExpense,unpaid=orders.filter(o=>o.status==='Chưa thanh toán').length;
-    document.getElementById('dashboard').innerHTML=heading('Báo cáo kinh doanh','Tổng quan cửa hàng',`<button class="btn primary" onclick="go('neworder')">＋ Tạo đơn mới</button>`)+
-      `<div class="filter-note"><b>Phễu lọc đang áp dụng:</b><span class="pill category">${esc(categoryName)}</span><span class="pill product">${esc(productName)}</span><span>${range.length?dateVN([range[0].getFullYear(),String(range[0].getMonth()+1).padStart(2,'0'),String(range[0].getDate()).padStart(2,'0')].join('-'))+' – '+dateVN([range[range.length-1].getFullYear(),String(range[range.length-1].getMonth()+1).padStart(2,'0'),String(range[range.length-1].getDate()).padStart(2,'0')].join('-')):''}</span></div>
-      <div class="grid kpis">${kpi('↗','Doanh thu',money(t.revenue),'bg-red',t.qty+' sản phẩm đã bán')}${kpi('↘','Tổng chi phí',money(totalExpense),'bg-amber','Chi phí nhập + chi phí khác đã phân bổ')}${kpi('●','Lợi nhuận',money(t.profit),t.profit>=0?'bg-green':'bg-red',t.revenue?(t.profit/t.revenue*100).toFixed(1)+'% doanh thu':'Chưa có doanh thu')}${kpi('!','Đơn chưa thanh toán',num(unpaid),'bg-brown',orders.length+' đơn phù hợp bộ lọc')}</div>
-      <div class="card" style="margin-top:16px"><h2 class="card-title">Doanh thu & chi phí theo thời gian lọc</h2><div class="card-sub">Hiển thị tối đa 31 ngày gần nhất trong khoảng đã chọn</div><div class="bar-chart">${days.map(d=>`<div class="bar-col" title="${d.label}: Doanh thu ${money(d.revenue)} · Chi phí ${money(d.expense)}"><i class="bar revenue" style="height:${Math.max(2,d.revenue/max*100)}%"></i><i class="bar expense" style="height:${Math.max(2,d.expense/max*100)}%"></i><span class="bar-label">${d.label}</span></div>`).join('')}</div><div class="chart-legend"><span><i class="legend-dot" style="background:var(--red)"></i>Doanh thu</span><span><i class="legend-dot" style="background:var(--amber)"></i>Chi phí</span></div></div>
-      <div class="tblwrap" style="margin-top:16px"><div class="table-head"><div><b>Danh sách đơn hàng</b><div class="small muted">${orders.length} đơn · ${unpaid} đơn chưa thanh toán</div></div></div><div class="scroller"><table><thead><tr><th>Ngày / mã đơn</th><th>Khách hàng</th><th>Nhân viên</th><th>Loại đơn</th><th>Thanh toán</th><th>Tiến độ</th><th class="right">Doanh thu</th><th>Thao tác</th></tr></thead><tbody>${orders.length?orders.map(o=>`<tr><td class="nowrap">${dateVN(o.date)}<div class="small muted">${esc(o.code)}</div></td><td><b>${esc(o.customerName||'Khách lẻ')}</b><div class="small muted">${esc(o.customerPhone||'')}</div></td><td>${esc(o.employee||'')}</td><td>${esc(o.orderType||'')}</td><td>${esc(o.payment||'')}</td><td><span class="pill ${o.status==='Đã thanh toán'?'sale':'expense'}">${esc(o.status||'Chưa thanh toán')}</span></td><td class="right strong">${money(filteredOrderTotal(o))}</td><td class="nowrap"><button class="btn ghost sm" onclick="viewReceipt(${o.id})">Xem</button>${isAdmin()?` <button class="btn ghost sm" onclick="editOrder(${o.id})">Sửa</button> <button class="btn ghost sm" onclick="toggleOrderStatus(${o.id})">${o.status==='Đã thanh toán'?'Chuyển chưa TT':'Xác nhận đã TT'}</button> <button class="btn danger sm" onclick="deleteOrder(${o.id})">Xóa</button>`:''}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Chưa có đơn hàng phù hợp bộ lọc</div></td></tr>'}</tbody></table></div></div>
-      <div class="tblwrap" style="margin-top:16px"><div class="table-head"><div><b>Lãi / lỗ theo mặt hàng</b><div class="small muted">Cost bình quân = Chi phí nhóm “Nguyên liệu” đã phân bổ / số lượng bán trong kỳ</div></div></div><div class="scroller"><table><thead><tr><th>Mặt hàng</th><th class="right">SL bán</th><th class="right">Doanh thu</th><th class="right">Chi phí nhập</th><th class="right">Cost bình quân</th><th class="right">Chi phí khác</th><th class="right">Lãi / lỗ</th><th class="right">Biên LN</th></tr></thead><tbody>${viewRows().filter(r=>r.qty||r.inputCost||r.otherExpense).map(r=>`<tr><td><b>${esc(r.product.name)}</b></td><td class="right">${num(r.qty)}</td><td class="right">${money(r.revenue)}</td><td class="right">${money(r.inputCost)}</td><td class="right">${r.qty?money(r.costPerUnit):'—'}</td><td class="right">${money(r.otherExpense)}</td><td class="right strong ${r.profit>=0?'positive':'negative'}">${money(r.profit)}</td><td class="right ${r.profit>=0?'positive':'negative'}">${r.revenue?r.margin.toFixed(1)+'%':'—'}</td></tr>`).join('')||'<tr><td colspan="8"><div class="empty">Chưa có dữ liệu để tính lãi/lỗ mặt hàng</div></td></tr>'}</tbody></table></div></div>`;
-  }
-
-  function customerOrderSummary(open){
-    if(!open)return '';
-    const rows=(open.items||[]).map(i=>`<div class="customer-current-row"><span><b>${Number(i.qty||0)}×</b> ${esc(i.name||product(i.productId)?.name||'Món')}</span><b>${money(Number(i.qty||0)*Number(i.price||0))}</b></div>`).join('');
-    return `<div class="customer-current-order"><div class="customer-current-head"><div><b>🧾 Đơn hiện tại của ${esc(normalizeTable(open.tableAddress))}</b><div class="small muted">${esc(open.code)} · mở lúc ${esc(open.time||'')}</div></div><span class="pill expense">Chưa thanh toán</span></div><div class="customer-current-items">${rows||'<div class="small muted">Chưa có món</div>'}</div><div class="customer-current-total"><span>Tổng đã gọi</span><span>${money(open.total||0)}</span></div></div>`;
-  }
-  function renderCustomerTableSessionBox(){
-    const table=normalizeTable(customerTableParam);
-    if(!table)return '';
-    if(!firebaseRemoteReady)return `<div class="sync-wait">⏳ Đang kiểm tra đơn hiện tại của <b>${esc(table)}</b>...</div>`;
-    const open=activeTableOrder(table);
-    if(!open)return `<div class="table-lock">🪑 ${esc(table)} · Chưa có đơn đang mở — đơn mới sẽ được tạo khi quý khách gọi món</div>`;
-    const summary=customerOrderSummary(open);
-    if(customerTableChoice==='add')return `<div class="table-lock">➕ KHÁCH CŨ · Tiếp tục gọi món cho ${esc(table)}</div>`+summary;
-    if(customerTableChoice==='new')return `<div class="table-lock">🆕 KHÁCH MỚI · Mở phiên mới tại ${esc(table)}</div>`;
-    return `<div class="table-session-box"><h3>🪑 ${esc(table)} đang có đơn chưa thanh toán</h3><p>Vui lòng chọn trước khi gọi món:</p><div class="table-session-actions"><button class="btn primary" onclick="chooseTableSession('add')">👤 KHÁCH CŨ — Gọi thêm</button><button class="btn ghost" onclick="chooseTableSession('new')">🆕 KHÁCH MỚI — Mở bàn mới</button></div></div>`+summary;
-  }
-  function chooseTableSession(choice){
-    const table=normalizeTable(customerTableParam),open=activeTableOrder(table);
-    customerTableChoice=choice;orderDraft.tableAddress=table;orderDraft.orderType='Tại quán';
-    if(choice==='add'&&open){orderDraft.customerName=open.customerName||'Khách lẻ';orderDraft.customerPhone=open.customerPhone||'';orderDraft.customerAddress=open.customerAddress||''}
-    if(choice==='new'){orderDraft.customerName='';orderDraft.customerPhone='';orderDraft.customerAddress='';}
-    renderNewOrder();
-  }
-  window.chooseTableSession=chooseTableSession;
-
-  function renderNewOrder(){
-    const cats=['all',...new Set(state.products.map(p=>p.category))],visible=state.products.filter(p=>(menuCategory==='all'||p.category===menuCategory)&&p.name.toLowerCase().includes(menuSearch.toLowerCase())),selected=state.products.filter(p=>(cart[p.id]||0)>0),total=selected.reduce((s,p)=>s+p.price*cart[p.id],0);
-    const employeeControl=!isAdmin()?`<input id="orderEmployee" value="${esc(currentUser.employeeName||currentUser.username)}" disabled>`:`<select id="orderEmployee">${state.employees.map(e=>`<option>${esc(e)}</option>`).join('')}</select>`;
-    const knownCustomers=[...state.customers].sort((a,b)=>(a.name||'').localeCompare(b.name||'','vi'));
-    const openTableOrder=customerMode&&customerTableParam?activeTableOrder(customerTableParam):null;
-    const lockCustomerIdentity=Boolean(customerMode&&customerTableParam&&customerTableChoice==='add'&&openTableOrder);
-    if(lockCustomerIdentity){orderDraft.customerName=openTableOrder.customerName||'Khách lẻ';orderDraft.customerPhone=openTableOrder.customerPhone||'';orderDraft.customerAddress=openTableOrder.customerAddress||'';orderDraft.tableAddress=normalizeTable(customerTableParam);orderDraft.orderType='Tại quán';}
-    const tableSessionTop=customerMode&&customerTableParam?renderCustomerTableSessionBox():'';
-    document.getElementById('neworder').innerHTML=heading('Quầy bán hàng',editingOrderId?'Sửa đơn hàng':'Tạo đơn mới',editingOrderId?'<span class="draft-tag">Đang sửa đơn đã lưu</span>':'')+tableSessionTop+`<div class="menu-layout"><div class="card"><div class="menu-tools"><input id="menuSearch" placeholder="Tìm món..." value="${esc(menuSearch)}"><div class="chips">${cats.map(c=>`<button class="chip ${menuCategory===c?'active':''}" onclick="setMenuCategory('${c}')">${c==='all'?'Tất cả':esc(c)}</button>`).join('')}</div></div><div class="menu-grid">${visible.map(p=>{const q=cart[p.id]||0;return`<div class="product-card ${q?'selected':''}"><div class="product-name">${esc(p.name)}</div><div class="product-foot"><span class="product-price">${money(p.price)}</span><div class="qty"><button onclick="changeQty('${p.id}',-1)">−</button><input type="number" min="0" step="1" inputmode="numeric" value="${q}" aria-label="Số lượng ${esc(p.name)}" onclick="this.select()" onchange="setQty('${p.id}',this.value)"><button class="plus" onclick="changeQty('${p.id}',1)">＋</button></div></div></div>`}).join('')}</div></div>
-      <div class="order-panel"><h2 class="card-title">Thông tin đơn hàng</h2><div class="cart">${selected.length?selected.map(p=>`<div class="cart-row"><b>${cart[p.id]}×</b><span>${esc(p.name)}</span><b>${money(p.price*cart[p.id])}</b><button onclick="removeCart('${p.id}')">×</button></div>`).join(''):'<div class="empty" style="padding:24px 10px">Chưa chọn món</div>'}</div><div class="order-total"><span>Tổng thanh toán</span><strong>${money(total)}</strong></div>
-      ${customerMode?`<div class="form-grid"><div class="field"><label>Tên khách hàng${lockCustomerIdentity?' (giữ theo đơn hiện tại)':''}</label><input id="customerName" placeholder="Tên của quý khách" ${lockCustomerIdentity?'readonly':''}></div><div class="field"><label>Số điện thoại</label><input id="customerPhone" inputmode="tel" placeholder="Số điện thoại" ${lockCustomerIdentity?'readonly':''}></div><div class="field"><label>Loại đơn</label><select id="orderType" ${customerTableParam?'disabled':''}><option>Tại quán</option><option>Mang về</option></select></div><div class="field"><label>Số bàn</label><input id="tableAddress" placeholder="Ví dụ: Bàn 05" ${customerTableParam?`value="${esc(normalizeTable(customerTableParam))}" readonly`:''}></div><div class="field full"><label>Ghi chú món ăn</label><textarea id="orderNote" placeholder="Ví dụ: không cay, không hành..."></textarea></div></div><input type="hidden" id="orderDate"><input type="hidden" id="orderEmployee" value="Khách tự đặt"><input type="hidden" id="customerAddress"><input type="hidden" id="payment" value="Thanh toán tại quán"><input type="hidden" id="orderStatus" value="Chưa thanh toán"><select id="existingCustomer" class="hidden"><option value=""></option></select><input type="checkbox" id="saveCustomer" class="hidden"><button class="btn primary" style="width:100%;margin-top:14px" ${selected.length?'':'disabled'} onclick="createOrder()">✓ Đặt món</button>`:`<div class="customer-picker"><div class="field"><label>Chọn khách hàng thân thiết</label><select id="existingCustomer" onchange="fillCustomer(this.value)" ${knownCustomers.length?'':'disabled'}><option value="">${knownCustomers.length?'Khách mới / khách lẻ':'Chưa có khách hàng đã lưu'}</option>${knownCustomers.map(c=>`<option value="${c.id}">${esc(c.name)} · ${esc(c.phone)}</option>`).join('')}</select></div></div><div class="form-grid"><div class="field"><label>Ngày bán *</label><input type="date" id="orderDate"></div><div class="field"><label>Nhân viên nhập đơn *</label>${employeeControl}</div><div class="field"><label>Tên khách hàng</label><input id="customerName" placeholder="Khách lẻ"></div><div class="field"><label>Số điện thoại</label><input id="customerPhone" inputmode="tel" placeholder="09xx..."></div><div class="field full"><label>Địa chỉ khách hàng</label><input id="customerAddress" placeholder="Địa chỉ giao dịch / nơi ở"></div><div class="field"><label>Loại đơn</label><select id="orderType"><option>Tại quán</option><option>Mang về</option></select></div><div class="field"><label>Số bàn</label><input id="tableAddress" placeholder="Ví dụ: Bàn 05"></div><div class="field"><label>Thanh toán</label><select id="payment"><option>Tiền mặt</option><option>Chuyển khoản</option></select></div><div class="field"><label>Trạng thái</label><select id="orderStatus"><option>Đã thanh toán</option><option>Chưa thanh toán</option></select></div><div class="field full"><label>Ghi chú</label><textarea id="orderNote" placeholder="Yêu cầu của khách..."></textarea></div></div><label class="check-row"><input type="checkbox" id="saveCustomer"> Lưu hoặc cập nhật khách hàng thân thiết khi có tên và số điện thoại</label><button class="btn primary" style="width:100%;margin-top:14px" ${selected.length?'':'disabled'} onclick="createOrder()">✓ ${editingOrderId?'Xem trước bản cập nhật':'Xem trước đơn hàng'}</button>`}</div></div>`;
-    restoreOrderDraft();
-    document.getElementById('menuSearch').oninput=e=>{captureOrderDraft();menuSearch=e.target.value;const pos=e.target.selectionStart;renderNewOrder();const n=document.getElementById('menuSearch');if(n){n.focus();n.setSelectionRange(pos,pos)}};
-  }
-  function captureOrderDraft(){if(!document.getElementById('orderDate'))return;orderDraft={date:document.getElementById('orderDate').value,employee:document.getElementById('orderEmployee')?.value||'',existingCustomer:document.getElementById('existingCustomer')?.value||'',customerName:document.getElementById('customerName').value,customerPhone:document.getElementById('customerPhone').value,customerAddress:document.getElementById('customerAddress').value,orderType:document.getElementById('orderType').value,tableAddress:document.getElementById('tableAddress').value,payment:document.getElementById('payment').value,status:document.getElementById('orderStatus').value,note:document.getElementById('orderNote').value,saveCustomer:document.getElementById('saveCustomer').checked}}
-  function restoreOrderDraft(){const d={date:today(),orderType:'Tại quán',payment:'Tiền mặt',status:customerMode?'Chưa thanh toán':'Đã thanh toán',saveCustomer:true,...orderDraft};if(customerMode&&customerTableParam){d.tableAddress=normalizeTable(customerTableParam);d.orderType='Tại quán';d.status='Chưa thanh toán';d.payment='Thanh toán tại quán'}['orderDate','orderEmployee','existingCustomer','customerName','customerPhone','customerAddress','orderType','tableAddress','payment','orderStatus','orderNote'].forEach(id=>{const el=document.getElementById(id),key=id==='orderDate'?'date':id==='orderEmployee'?'employee':id==='orderStatus'?'status':id;if(el&&d[key]!==undefined)el.value=d[key]});document.getElementById('saveCustomer').checked=d.saveCustomer!==false}
-  function resetOrderDraft(){cart={};orderDraft={};pendingOrder=null;editingOrderId=null;menuSearch='';menuCategory='all'}
-  function rerenderOrderKeepPosition(){const y=window.scrollY,grid=document.querySelector('.menu-grid'),gy=grid?grid.scrollTop:0;renderNewOrder();requestAnimationFrame(()=>{window.scrollTo(0,y);const ng=document.querySelector('.menu-grid');if(ng)ng.scrollTop=gy})}
-  window.setMenuCategory=c=>{captureOrderDraft();menuCategory=c;rerenderOrderKeepPosition()};window.changeQty=(id,d)=>{captureOrderDraft();cart[id]=Math.max(0,(cart[id]||0)+d);rerenderOrderKeepPosition()};window.setQty=(id,value)=>{captureOrderDraft();const q=Math.max(0,Math.floor(Number(value)||0));if(q>0)cart[id]=q;else delete cart[id];rerenderOrderKeepPosition()};window.removeCart=id=>{captureOrderDraft();delete cart[id];rerenderOrderKeepPosition()};
-
-  function playNewOrderSound(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ctx=new A(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.setValueAtTime(1100,ctx.currentTime+.14);gain.gain.setValueAtTime(.18,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.55);osc.start();osc.stop(ctx.currentTime+.55)}catch(e){console.warn('Không phát được âm báo',e)}}
-  function queueNewQrOrder(o){unreadQrOrders.push(o);showNextQrOrder();playNewOrderSound()}
-  function showNextQrOrder(){const o=unreadQrOrders[0],box=document.getElementById('newOrderAlert'),badge=document.getElementById('newOrderBadge');if(badge){badge.textContent=unreadQrOrders.length;badge.classList.toggle('show',unreadQrOrders.length>0)}if(!o||!box){if(box)box.classList.remove('show');return}box.querySelector('h3').textContent=o._qrAction==='add'?'🔔 BÀN GỌI THÊM MÓN!':'🔔 CÓ ĐƠN HÀNG MỚI!';const addTotal=o._qrAction==='add'?(o.items||[]).reduce((s,i)=>s+Number(i.qty||0)*Number(i.price||0),0):(o.total||0);document.getElementById('newOrderAlertBody').innerHTML=`<div><b>Mã đơn:</b> ${esc(o.code||'')}</div><div><b>Khách hàng:</b> ${esc(o.customerName||'Khách lẻ')}</div><div><b>Bàn:</b> ${esc(o.tableAddress||'Chưa nhập')}</div>${o._qrAction==='add'?`<div><b>Món gọi thêm:</b> ${(o.items||[]).map(i=>esc(i.qty+'× '+i.name)).join(', ')}</div>`:''}<div class="alert-total">${money(addTotal)}</div>`;document.getElementById('viewNewOrderBtn').onclick=()=>{pendingOrder=null;const selected=unreadQrOrders.shift();showNextQrOrder();showReceipt(selected||o,'view')};box.classList.add('show')}
-  function ackNewOrder(){if(unreadQrOrders.length)unreadQrOrders.shift();showNextQrOrder()}
-  window.ackNewOrder=ackNewOrder;
-
-  function fillCustomer(id){const c=state.customers.find(x=>String(x.id)===String(id));document.getElementById('customerName').value=c?.name||'';document.getElementById('customerPhone').value=c?.phone||'';document.getElementById('customerAddress').value=c?.address||'';captureOrderDraft()}
-  function createOrder(){
-    if(!currentUser)return toast('Vui lòng đăng nhập lại');captureOrderDraft();
-    if(customerMode&&customerTableParam&&!firebaseRemoteReady)return toast('Hệ thống đang kiểm tra đơn của bàn. Vui lòng chờ một chút');
-    if(customerMode&&customerTableParam&&activeTableOrder(customerTableParam)&&!customerTableChoice)return toast('Hãy chọn “Gọi thêm món” hoặc “Tôi là khách mới” trước khi đặt món');
-    const items=state.products.filter(p=>(cart[p.id]||0)>0).map(p=>({productId:p.id,name:p.name,category:p.category,qty:cart[p.id],price:p.price,cost:p.cost||0}));if(!items.length)return toast('Hãy chọn ít nhất một món');
-    const existing=editingOrderId?state.orders.find(o=>o.id===editingOrderId):null,emp=isAdmin()?(orderDraft.employee||state.employees[0]):(currentUser.employeeName||currentUser.username);if(!emp)return toast('Hãy chọn nhân viên nhập đơn');
-    const d=orderDraft.date||today(),stamp=d.replaceAll('-',''),code=existing?.code||('DH-'+stamp+'-'+String(state.sequence).padStart(4,'0'));
-    const tableOpenForAdd=customerMode&&customerTableParam&&customerTableChoice==='add'?activeTableOrder(customerTableParam):null;
-    const customerName=tableOpenForAdd?(tableOpenForAdd.customerName||'Khách lẻ'):((orderDraft.customerName||'').trim()||'Khách lẻ'),customerPhone=tableOpenForAdd?(tableOpenForAdd.customerPhone||''):(orderDraft.customerPhone||'').trim(),customerAddress=tableOpenForAdd?(tableOpenForAdd.customerAddress||''):(orderDraft.customerAddress||'').trim();
-    pendingOrder={id:existing?.id||Date.now(),code,date:d,time:existing?.time||new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}),employee:emp,customerName,customerPhone,customerAddress,orderType:(customerMode&&customerTableParam)?'Tại quán':(orderDraft.orderType||'Tại quán'),tableAddress:(customerMode&&customerTableParam)?normalizeTable(customerTableParam):(orderDraft.tableAddress||'').trim(),payment:customerMode?'Thanh toán tại quán':(orderDraft.payment||'Tiền mặt'),status:customerMode?'Chưa thanh toán':(orderDraft.status||'Đã thanh toán'),note:(orderDraft.note||'').trim(),items,total:items.reduce((s,i)=>s+i.qty*i.price,0),tableSessionActive:customerMode&&customerTableParam?true:undefined,_customerTableAction:customerMode&&customerTableParam?(customerTableChoice||'new'):null,_saveCustomer:orderDraft.saveCustomer!==false};
-    showReceipt(pendingOrder,'preview');
-  }
-  async function savePendingOrder(){
-    if(!pendingOrder)return;
-    const action=pendingOrder._customerTableAction,table=normalizeTable(pendingOrder.tableAddress);
-    const order={...pendingOrder};delete order._saveCustomer;delete order._customerTableAction;
-    if(customerMode){order.status='Chưa thanh toán';order.employee='Khách tự đặt';order.payment='Thanh toán tại quán'}
-    let savedOrder=order,isAdd=false;
-    if(customerMode&&customerTableParam&&action==='add'){
-      const open=activeTableOrder(table);
-      if(open){
-        isAdd=true;
-        const addedItems=order.items.map(i=>({...i}));
-        open.items=[...(open.items||[])];
-        addedItems.forEach(i=>{const ex=open.items.find(x=>x.productId===i.productId&&Number(x.price)===Number(i.price));if(ex)ex.qty+=i.qty;else open.items.push(i)});
-        open.total=(open.items||[]).reduce((sum,i)=>sum+Number(i.qty||0)*Number(i.price||0),0);
-        open.note=[open.note,order.note?`Gọi thêm ${new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}: ${order.note}`:''].filter(Boolean).join(' | ');
-        open.tableSessionActive=true;
-        open.lastAddedAt=new Date().toISOString();
-        open.lastAddedItems=addedItems;
-        savedOrder=open;
+function E(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function loadFirebase(){
+  try{
+    const [ms,os]=await Promise.all([getDocs(collection(db,'models')),getDocs(collection(db,'orders'))]);
+    models=ms.docs.map(d=>({id:d.id,...d.data()}));
+    orderData=os.docs.map(d=>({id:d.id,...d.data()}));
+    models.sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
+    orderData.sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
+    dbStatus.textContent='● Firebase đã kết nối'; dbStatus.style.color='#137333';
+    render();
+    if(!models.length && !orderData.length && (localModels.length||localOrders.length)){
+      if(confirm(`Firebase đang trống. Máy này có ${localModels.length} mẫu và ${localOrders.length} đơn cũ. Chuyển dữ liệu cũ lên Firebase ngay?`)){
+        dbStatus.textContent='● Đang chuyển dữ liệu...';
+        for(const m of localModels) await setDoc(doc(db,'models',m.id||crypto.randomUUID()),m);
+        for(const o of localOrders) await setDoc(doc(db,'orders',o.id||crypto.randomUUID()),o);
+        await loadFirebase();
       }
     }
-    if(!isAdd){
-      if(customerMode&&customerTableParam&&action==='new'){const previous=activeTableOrder(table);if(previous&&String(previous.id)!==String(order.id)){previous.tableSessionActive=false;previous.tableSessionClosedReason='Khách mới vào bàn khi đơn cũ chưa thanh toán'}}
-      if(editingOrderId){const i=state.orders.findIndex(o=>o.id===editingOrderId);if(i>=0)state.orders[i]=order}
-      else{state.orders.unshift(order);state.sequence++}
-    }
-    if(pendingOrder._saveCustomer&&order.customerName!=='Khách lẻ'&&order.customerPhone)upsertCustomer(order.customerName,order.customerPhone,order.customerAddress);
-    const code=savedOrder.code,wasEdit=Boolean(editingOrderId);
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    if(window.firebaseSaveState){try{await window.firebaseSaveState(state)}catch(e){console.error('Firebase save:',e);toast('Đã lưu trên máy nhưng chưa đồng bộ được với quán')}}
-    pendingOrder=null;editingOrderId=null;document.getElementById('receiptModal').classList.remove('show');resetOrderDraft();
-    if(customerMode){customerTableChoice='add';showCustomerSuccess(savedOrder,isAdd);return}
-    toast(wasEdit?'Đã cập nhật đơn '+code:'Đã lưu đơn '+code);go('dashboard')
+  }catch(err){
+    console.error(err); dbStatus.textContent='● Lỗi Firebase'; dbStatus.style.color='#b42318';
+    alert('Không kết nối được Firebase: '+err.message);
   }
-  function showCustomerSuccess(order,isAdd=false){
-    const code=order?.code||'',summary=customerOrderSummary(order);
-    document.getElementById('receiptStatusText').textContent='Đặt món thành công';
-    document.getElementById('receiptBody').innerHTML=`<div style="text-align:center;padding:22px 16px 12px"><div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:var(--green-soft);color:var(--green);font-size:34px;font-weight:900">✓</div><h2 style="margin:0 0 8px;color:var(--green)">${isAdd?'GỌI THÊM MÓN THÀNH CÔNG':'ĐẶT MÓN THÀNH CÔNG'}</h2><p style="margin:0 0 16px">${isAdd?'Món mới đã được cộng vào đơn hiện tại.':'Đơn đã được gửi tới quán.'}</p></div>${summary}<div style="text-align:center;padding:0 16px 20px"><p class="small muted">Quý khách có thể theo dõi toàn bộ món đã gọi ở phía trên.</p><button class="btn primary" style="margin-top:8px;min-width:210px" onclick="newCustomerOrder()">＋ Tiếp tục gọi thêm món</button></div>`;
-    document.getElementById('receiptModal').classList.add('show');
-  }
-  function newCustomerOrder(){
-    document.getElementById('receiptModal').classList.remove('show');resetOrderDraft();
-    if(customerMode&&customerTableParam){
-      const open=activeTableOrder(customerTableParam);
-      if(open){
-        customerTableChoice='add';
-        orderDraft={tableAddress:normalizeTable(customerTableParam),orderType:'Tại quán',customerName:open.customerName||'Khách lẻ',customerPhone:open.customerPhone||'',customerAddress:open.customerAddress||'',payment:'Thanh toán tại quán',status:'Chưa thanh toán'};
-      }else customerTableChoice=null;
-    }
-    go('neworder');
-  }
-  function discardPendingOrder(){document.getElementById('receiptModal').classList.remove('show');resetOrderDraft();renderNewOrder();toast('Đã đóng và xóa nội dung đơn chưa lưu')}
-  function showReceipt(o,mode='view'){lastOrder=o;const preview=mode==='preview';document.getElementById('receiptStatusText').textContent=preview?'Đơn chưa được lưu — kiểm tra trước khi xác nhận':'Đơn đã được lưu trong danh sách đơn hàng';document.getElementById('receiptBody').innerHTML=`<div class="success-badge">${preview?'◷ ĐƠN HÀNG CHƯA ĐƯỢC LƯU':'✓ ĐƠN HÀNG ĐÃ ĐƯỢC LƯU'}</div><div class="receipt"><div class="receipt-brand"><div class="eyebrow">Nem nướng</div><h2>DŨNG HIỀN</h2><div class="small muted">Ngon · Bổ · Rẻ</div></div><div class="receipt-line"></div><div class="receipt-info"><b>Mã đơn</b><span>${esc(o.code)}</span><b>Ngày giờ</b><span>${dateVN(o.date)} · ${esc(o.time)}</span><b>Khách hàng</b><span>${esc(o.customerName)} ${o.customerPhone?'· '+esc(o.customerPhone):''}</span>${o.customerAddress?`<b>Địa chỉ KH</b><span>${esc(o.customerAddress)}</span>`:''}<b>Loại đơn</b><span>${esc(o.orderType)} ${o.tableAddress?'· '+esc(o.tableAddress):''}</span><b>Nhân viên</b><span>${esc(o.employee)}</span><b>Thanh toán</b><span>${esc(o.payment)} · ${esc(o.status)}</span></div><div class="receipt-line"></div><table class="receipt-items"><thead><tr><th>Món</th><th class="right">SL</th><th class="right">Thành tiền</th></tr></thead><tbody>${o.items.map(i=>`<tr><td>${esc(i.name)}</td><td class="right">${i.qty}</td><td class="right">${money(i.qty*i.price)}</td></tr>`).join('')}</tbody></table><div class="receipt-line"></div><div class="receipt-total"><span>TỔNG CỘNG</span><span>${money(o.total)}</span></div>${o.note?`<p class="small"><b>Ghi chú:</b> ${esc(o.note)}</p>`:''}</div><div class="modal-actions">${preview?'<button class="btn ghost" onclick="discardPendingOrder()">Đóng</button><button class="btn primary" onclick="savePendingOrder()">✓ Lưu</button><button class="btn green" onclick="window.print()">🖨 In</button>':'<button class="btn ghost" onclick="closeReceipt()">Đóng</button><button class="btn green" onclick="window.print()">🖨 In</button>'}</div>`;document.getElementById('receiptModal').classList.add('show')}
-  function closeReceipt(){if(pendingOrder)return discardPendingOrder();document.getElementById('receiptModal').classList.remove('show')}
-  function editOrder(id){if(!requireAdmin())return;const o=state.orders.find(x=>x.id===id);if(!o)return;editingOrderId=o.id;pendingOrder=null;cart={};(o.items||[]).forEach(i=>cart[i.productId]=i.qty);orderDraft={date:o.date,employee:o.employee,customerName:o.customerName||'',customerPhone:o.customerPhone||'',customerAddress:o.customerAddress||'',orderType:o.orderType||'Tại quán',tableAddress:o.tableAddress||'',payment:o.payment||'Tiền mặt',status:o.status||'Chưa thanh toán',note:o.note||'',saveCustomer:false};go('neworder')}
-  function deleteOrder(id){if(!requireAdmin())return;const o=state.orders.find(x=>x.id===id);if(o&&confirm('Xóa đơn '+o.code+'? Doanh thu và lợi nhuận sẽ được tính lại.')){state.orders=state.orders.filter(x=>x.id!==id);save();renderDashboard();toast('Đã xóa đơn hàng')}}
-  Object.assign(window,{fillCustomer,closeReceipt,newCustomerOrder,viewReceipt:id=>{const o=state.orders.find(x=>x.id===id);if(o){pendingOrder=null;showReceipt(o,'view')}},savePendingOrder,discardPendingOrder,editOrder,deleteOrder});
+}
+async function saveModelDb(m){await setDoc(doc(db,'models',m.id),m)}
+async function saveOrderDb(o){await setDoc(doc(db,'orders',o.id),o)}
+async function deleteModelDb(id){await deleteDoc(doc(db,'models',id))}
+async function deleteOrderDb(id){await deleteDoc(doc(db,'orders',id))}
 
-  function renderExpenses(){
-    if(!currentUser)return;
-    const targetOptions=state.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(''),employeeControl=isAdmin()?`<select id="expenseEmployee">${state.employees.map(e=>`<option>${esc(e)}</option>`).join('')}</select>`:`<input id="expenseEmployee" value="${esc(currentUser.employeeName||currentUser.username)}" disabled>`;
-    document.getElementById('expenses').innerHTML=heading('Quản lý dòng tiền',editingExpenseId?'Sửa khoản chi':'Ghi nhận chi phí',editingExpenseId?'<span class="draft-tag">Admin đang sửa khoản chi</span>':'')+`<div class="grid two"><div class="card"><div class="notice"><b>Phân quyền:</b> Nhân viên được nhập khoản chi mới. Chỉ Admin được sửa hoặc xóa chi phí đã lưu.</div><div class="form-grid"><div class="field"><label>Ngày chi *</label><input type="date" id="expenseDate" value="${today()}"></div><div class="field"><label>Nhân viên nhập *</label>${employeeControl}</div><div class="field full"><label>Nội dung chi *</label><input id="expenseDesc" placeholder="Ví dụ: Mua thịt làm nem lụi"></div><div class="field"><label>Nhóm chi phí</label><select id="expenseCategory"><option>Nguyên liệu</option><option>Nhân công</option><option>Điện / nước</option><option>Mặt bằng</option><option>Bao bì</option><option>Vận chuyển</option><option>Marketing</option><option>Khác</option></select></div><div class="field"><label>Số tiền (VNĐ) *</label><input id="expenseAmount" inputmode="numeric" placeholder="0"></div><div class="field"><label>Phân bổ chi phí *</label><select id="targetType" onchange="updateExpenseTarget()"><option value="product">Cho một mặt hàng</option><option value="multi">Cho một nhóm hàng / nhiều mặt hàng</option><option value="general">Chi phí chung toàn quán</option></select></div><div class="field" id="targetField"><label>Mặt hàng hưởng chi phí *</label><select id="targetId">${targetOptions}</select></div><div class="field full"><label>Ghi chú</label><textarea id="expenseNote" placeholder="Thông tin hóa đơn, nhà cung cấp..."></textarea></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn primary" onclick="createExpense()">${editingExpenseId?'✓ Cập nhật khoản chi':'＋ Lưu khoản chi'}</button>${editingExpenseId?'<button class="btn ghost" onclick="cancelEditExpense()">Hủy sửa</button>':''}</div></div>
-      <div class="card"><h2 class="card-title">Tổng chi theo cách phân bổ</h2>${expenseSummary()}</div></div>${expenseTable()}`;
-    if(editingExpenseId)populateExpenseForm();
-  }
-  function expenseSummary(){const ex=filteredExpenses(),types=[['product','Một mặt hàng'],['multi','Nhiều mặt hàng'],['category','Nhóm hàng (dữ liệu cũ)'],['general','Chi phí chung']];return`<div class="summary-list">${types.filter(([k])=>k!=='category'||ex.some(e=>e.targetType==='category')).map(([k,n])=>`<div class="summary-row"><span>${n}</span><b>${money(ex.filter(e=>e.targetType===k).reduce((s,e)=>s+e.amount,0))}</b></div>`).join('')}</div>`}
-  function multiProductChoices(){return[...new Set(state.products.map(p=>p.category))].map(c=>`<div class="small strong" style="grid-column:1/-1;margin-top:5px">${esc(c)}</div>${state.products.filter(p=>p.category===c).map(p=>`<label><input type="checkbox" data-expense-product value="${p.id}"><span>${esc(p.name)}</span></label>`).join('')}`).join('')}
-  function updateExpenseTarget(){const type=document.getElementById('targetType').value,field=document.getElementById('targetField');if(type==='general'){field.className='field';field.innerHTML='<label>Đối tượng</label><input value="Toàn cửa hàng" disabled>';return}if(type==='multi'){field.className='field full';field.innerHTML='<label>Tích chọn các mặt hàng nhận chi phí *</label><div class="multi-checks">'+multiProductChoices()+'</div><div class="help">Có thể chọn 2–3 món trong cùng nhóm hoặc chọn các món ở nhiều nhóm khác nhau.</div>';return}field.className='field';field.innerHTML='<label>Mặt hàng *</label><select id="targetId">'+state.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')+'</select>'}
-  function createExpense(){if(!currentUser)return;if(editingExpenseId&&!isAdmin())return toast('Chỉ Admin được sửa chi phí');const amount=Number((document.getElementById('expenseAmount').value||'').replace(/\D/g,'')),desc=document.getElementById('expenseDesc').value.trim(),type=document.getElementById('targetType').value;if(!amount||!desc)return toast('Hãy nhập nội dung và số tiền');const targetIds=type==='multi'?[...document.querySelectorAll('[data-expense-product]:checked')].map(x=>x.value):[];if(type==='multi'&&!targetIds.length)return toast('Hãy tích chọn ít nhất một mặt hàng');const targetId=type==='general'?'all':type==='product'?document.getElementById('targetId').value:'',employee=isAdmin()?document.getElementById('expenseEmployee').value:(currentUser.employeeName||currentUser.username),entry={id:editingExpenseId||Date.now(),date:document.getElementById('expenseDate').value||today(),employee,description:desc,category:document.getElementById('expenseCategory').value,amount,targetType:type,targetId,targetIds,note:document.getElementById('expenseNote').value.trim()};if(editingExpenseId){const i=state.expenses.findIndex(e=>e.id===editingExpenseId);if(i>=0)state.expenses[i]=entry}else state.expenses.unshift(entry);const wasEdit=Boolean(editingExpenseId);editingExpenseId=null;save();renderExpenses();toast(wasEdit?'Đã cập nhật khoản chi':'Đã lưu khoản chi '+money(amount))}
-  function targetName(e){if(e.targetType==='general')return'Toàn cửa hàng';if(e.targetType==='category')return e.targetId;if(e.targetType==='multi'){const names=(e.targetIds||[]).map(id=>product(id)?.name).filter(Boolean);return names.slice(0,3).join(', ')+(names.length>3?' +'+(names.length-3):'')}return product(e.targetId)?.name||'Mặt hàng đã xóa'}
-  function expenseTable(){const ex=filteredExpenses();return`<div class="tblwrap" style="margin-top:16px"><div class="table-head"><div><b>Chi phí gần đây</b><div class="small muted">${ex.length} khoản chi trong kỳ</div></div></div><div class="scroller"><table><thead><tr><th>Ngày</th><th>Nội dung</th><th>Phân bổ cho</th><th>Nhân viên</th><th class="right">Số tiền</th><th></th></tr></thead><tbody>${ex.length?ex.map(e=>`<tr><td class="nowrap">${dateVN(e.date)}</td><td><b>${esc(e.description)}</b><div class="small muted">${esc(e.category)}</div></td><td><span class="pill ${e.targetType}">${esc(targetName(e))}</span></td><td>${esc(e.employee||'')}</td><td class="right strong negative">−${money(e.amount)}</td><td class="nowrap">${isAdmin()?`<button class="btn ghost sm" onclick="editExpense(${e.id})">Sửa</button> <button class="btn danger sm" onclick="deleteExpense(${e.id})">Xóa</button>`:'<span class="small muted">Chỉ xem</span>'}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Chưa có khoản chi</div></td></tr>'}</tbody></table></div></div>`}
-  function editExpense(id){if(!requireAdmin())return;editingExpenseId=id;renderExpenses()}
-  function populateExpenseForm(){const e=state.expenses.find(x=>x.id===editingExpenseId);if(!e)return;document.getElementById('expenseDate').value=e.date;document.getElementById('expenseEmployee').value=e.employee||state.employees[0];document.getElementById('expenseDesc').value=e.description||'';document.getElementById('expenseCategory').value=e.category||'Khác';document.getElementById('expenseAmount').value=e.amount||'';document.getElementById('expenseNote').value=e.note||'';const type=e.targetType==='category'?'multi':e.targetType;document.getElementById('targetType').value=type;updateExpenseTarget();if(type==='product')document.getElementById('targetId').value=e.targetId;if(type==='multi'){const ids=e.targetType==='category'?state.products.filter(p=>p.category===e.targetId).map(p=>p.id):(e.targetIds||[]);document.querySelectorAll('[data-expense-product]').forEach(x=>x.checked=ids.includes(x.value))}}
-  function cancelEditExpense(){editingExpenseId=null;renderExpenses()}
-  function deleteExpense(id){if(!requireAdmin())return;if(confirm('Xóa khoản chi này?')){state.expenses=state.expenses.filter(e=>e.id!==id);if(editingExpenseId===id)editingExpenseId=null;save();renderExpenses();toast('Đã xóa khoản chi')}}
-  Object.assign(window,{updateExpenseTarget,createExpense,editExpense,cancelEditExpense,deleteExpense});
+function sourceOf(u=''){try{let h=new URL(u).hostname.replace('www.','');if(h.includes('makerworld'))return'MakerWorld';if(h.includes('printables'))return'Printables';if(h.includes('thingiverse'))return'Thingiverse';return h}catch{return'Nguồn'}}
+function cats(){return[...new Set(models.map(x=>x.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'))}
+function pic(m){return m.image?`<img src="${E(m.image)}" onerror="this.style.display='none'">`:`<span class="ph">🧩</span>`}
+function money(v){v=Number(v||0);return v?new Intl.NumberFormat('vi-VN').format(v)+'đ':'—'}
+function page(p){current=p;mModels.classList.toggle('active',p==='models');mOrders.classList.toggle('active',p==='orders');modelsPage.classList.toggle('hidden',p!=='models');ordersPage.classList.toggle('hidden',p!=='orders');search.placeholder=p==='models'?'🔎  Tìm mẫu theo tên, tag, nguồn...':'🔎  Tìm đơn hàng...';addBtn.textContent=p==='models'?'＋ Thêm mẫu':'＋ Thêm đơn';search.value='';render()}
+function addCurrent(){current==='models'?openModel():openOrder()}
+function render(){current==='models'?renderModels():renderOrders()}
+function renderModels(){
+ let cs=['Tất cả',...cats()];if(!cs.includes(active))active='Tất cả';
+ filters.innerHTML=cs.map(c=>`<button class="chip ${c===active?'active':''}" onclick="active=${JSON.stringify(c)};renderModels()">${E(c)}</button>`).join('');
+ catsEl=document.getElementById('cats');catsEl.innerHTML=cats().map(c=>`<option value="${E(c)}">`).join('');
+ let q=search.value.toLowerCase().trim(), list=models.filter(m=>(active==='Tất cả'||m.category===active)&&(!q||[m.name,m.category,m.note,sourceOf(m.url)].join(' ').toLowerCase().includes(q)));
+ countModels.textContent=`${models.length} mẫu`;
+ grid.innerHTML=list.length?list.map(m=>`<article class="card">
+ <div class="pic" onclick="window.open(${JSON.stringify(m.url)},'_blank')">${pic(m)}</div>
+ <div class="cardbody"><div class="name" title="${E(m.name)}">${E(m.name)}</div>
+ <div class="tags"><span class="tag">${E(m.category)}</span><span class="tag source">${E(sourceOf(m.url))}</span></div>
+ <div class="money"><span class="sell">Bán: ${money(m.price)}</span><span class="cost">CP: ${money(m.cost)}</span></div>
+ <div class="card-actions"><button class="btn soft" onclick="editModel('${m.id}')">✎ Sửa</button><button class="btn danger" onclick="delModel('${m.id}')">🗑 Xóa</button></div>
+ </div></article>`).join(''):`<div class="empty" style="grid-column:1/-1">Chưa có mẫu. Chọn <b>Thêm mẫu</b> để bắt đầu.</div>`
+}
+function cardMenu(id){let a=prompt('Nhập 1 để Sửa, 2 để Xóa, 3 để Mở link mẫu:','1');if(a==='1')editModel(id);if(a==='2')delModel(id);if(a==='3'){let m=models.find(x=>x.id===id);if(m)window.open(m.url,'_blank')}}
+function openModel(){el.modelForm.reset();el.modelId.value='';el.modelTitle.textContent='Thêm mẫu';el.prev.removeAttribute('src');el.pasteBox.classList.remove('has');el.imgMode.textContent='Có thể dùng URL hoặc dán trực tiếp ảnh.';el.modelDlg.showModal()}
+function editModel(id){let m=models.find(x=>x.id===id);if(!m)return;el.modelId.value=m.id;el.url.value=m.url;el.modelName.value=m.name;el.category.value=m.category;el.image.value=m.image||'';el.price.value=m.price||'';el.cost.value=m.cost||'';el.note.value=m.note||'';el.modelTitle.textContent='Sửa mẫu';showPreview();el.pasteBox.classList.toggle('has',(m.image||'').startsWith('data:image'));el.modelDlg.showModal()}
+function showPreview(){el.prev.src=el.image.value||'';el.imgMode.textContent=(el.image.value||'').startsWith('data:image')?'Ảnh đang được lưu trực tiếp trong dữ liệu.':'Ảnh đang được tải từ URL.'}
+async function saveModel(e){
+ e.preventDefault();
+ try{
+   const id=el.modelId.value||crypto.randomUUID(), old=models.find(x=>x.id===id);
+   const m={id,url:el.url.value.trim(),name:el.modelName.value.trim(),category:el.category.value.trim(),image:el.image.value.trim(),price:Number(el.price.value||0),cost:Number(el.cost.value||0),note:el.note.value.trim(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+   if(!m.name||!m.category||!m.url){alert('Vui lòng nhập đủ Tên mẫu, Phân loại và Link mẫu.');return}
+   let i=models.findIndex(x=>x.id===id); i>=0?models[i]=m:models.unshift(m);
+   persist(); el.modelDlg.close(); renderModels();
+ }catch(err){console.error(err);alert('Không thể lưu mẫu: '+err.message)}
+}
+async function delModel(id){if(orderData.some(o=>o.items.some(i=>i.modelId===id)))return alert('Mẫu đang được dùng trong đơn hàng nên chưa thể xóa.');if(confirm('Xóa mẫu này?')){try{await deleteModelDb(id);models=models.filter(x=>x.id!==id);renderModels()}catch(err){alert('Không thể xóa mẫu: '+err.message)}}}
+function openOrder(){if(!models.length)return alert('Hãy thêm mẫu vào Kho mẫu trước.');orderForm.reset();orderId.value='';orderTitle.textContent='Thêm đơn hàng';renderPicker([]);orderDlg.showModal()}
+function renderPicker(items){let mp=Object.fromEntries((items||[]).map(i=>[i.modelId,i.qty]));picker.innerHTML=models.map(m=>`<div class="pick"><label><input type="checkbox" data-id="${m.id}" ${mp[m.id]?'checked':''}>${m.image?`<img src="${E(m.image)}">`:'🧩'}<span><b>${E(m.name)}</b><br><span class="hint">${E(m.category)}</span></span></label><input data-q="${m.id}" type="number" min="1" value="${mp[m.id]||1}"></div>`).join('')}
+async function saveOrder(e){e.preventDefault();let items=[...picker.querySelectorAll('[type=checkbox]:checked')].map(c=>({modelId:c.dataset.id,qty:Math.max(1,+picker.querySelector(`[data-q="${c.dataset.id}"]`).value||1)}));if(!items.length)return alert('Chọn ít nhất 1 mẫu.');let id=orderId.value||crypto.randomUUID(),old=orderData.find(x=>x.id===id),o={id,name:orderName.value.trim(),note:orderNote.value.trim(),items,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};let i=orderData.findIndex(x=>x.id===id);i>=0?orderData[i]=o:orderData.unshift(o);try{await saveOrderDb(o);orderDlg.close();renderOrders()}catch(err){alert('Không thể lưu đơn: '+err.message)}}
+function renderOrders(){let q=search.value.toLowerCase().trim(),list=orderData.filter(o=>!q||[o.name,o.note].join(' ').toLowerCase().includes(q));countOrders.textContent=`${orderData.length} đơn`;orders.innerHTML=list.length?list.map(o=>`<article class="order"><div class="orderhead"><div><div class="ordername">${E(o.name)}</div><div class="hint">${new Date(o.createdAt).toLocaleString('vi-VN')}</div></div><div><button class="btn soft" onclick="editOrder('${o.id}')">Sửa</button> <button class="btn danger" onclick="delOrder('${o.id}')">Xóa</button></div></div><div class="note">${E(o.note||'')}</div><div class="items">${o.items.map(i=>{let m=models.find(x=>x.id===i.modelId);return m?`<div class="item">${m.image?`<img src="${E(m.image)}">`:'🧩'}<span><b>${E(m.name)}</b><br><span class="qty">× ${i.qty}</span></span><button class="btn soft" onclick="window.open(${JSON.stringify(m.url)},'_blank')">↗</button></div>`:''}).join('')}</div></article>`).join(''):`<div class="empty">Chưa có đơn hàng.</div>`}
+function editOrder(id){let o=orderData.find(x=>x.id===id);if(!o)return;orderId.value=o.id;orderName.value=o.name;orderNote.value=o.note||'';orderTitle.textContent='Sửa đơn hàng';renderPicker(o.items);orderDlg.showModal()}
+async function delOrder(id){if(confirm('Xóa đơn hàng này?')){try{await deleteOrderDb(id);orderData=orderData.filter(x=>x.id!==id);renderOrders()}catch(err){alert('Không thể xóa đơn: '+err.message)}}}
 
-  function relevantOrder(o){const f=selectedFilters();return o.items.some(i=>(f.category==='all'||i.category===f.category)&&(f.productId==='all'||i.productId===f.productId))}
-  function filteredOrderTotal(o){const f=selectedFilters();return(o.items||[]).filter(i=>(f.category==='all'||i.category===f.category)&&(f.productId==='all'||i.productId===f.productId)).reduce((s,i)=>s+i.qty*i.price,0)}
-  function toggleOrderStatus(id){if(!requireAdmin())return;const o=state.orders.find(x=>x.id===id);if(!o)return;o.status=o.status==='Đã thanh toán'?'Chưa thanh toán':'Đã thanh toán';if(o.tableAddress)o.tableSessionActive=o.status==='Chưa thanh toán';save();renderDashboard();toast('Đã cập nhật trạng thái '+o.code)}
-
-  function upsertCustomer(name,phone,address){const normalized=phone.replace(/\s/g,''),existing=state.customers.find(c=>(c.phone||'').replace(/\s/g,'')===normalized);if(existing){existing.name=name;existing.phone=phone;existing.address=address;existing.updatedAt=today();return existing.id}const customer={id:'c'+Date.now(),name,phone,address,createdAt:today(),updatedAt:today()};state.customers.unshift(customer);return customer.id}
-  function customerStats(c){const orders=state.orders.filter(o=>(o.customerPhone||'').replace(/\s/g,'')===(c.phone||'').replace(/\s/g,''));return{count:orders.length,revenue:orders.reduce((s,o)=>s+(o.total||0),0),last:orders.sort((a,b)=>b.date.localeCompare(a.date))[0]?.date||''}}
-  function renderCustomers(){
-    if(!isAdmin())return go('dashboard');
-    document.getElementById('customers').innerHTML=heading('Khách hàng thân thiết','Quản lý khách hàng')+`<div class="grid two"><div class="tblwrap"><div class="table-head"><div><b>Danh sách khách hàng</b><div class="small muted">${state.customers.length} khách hàng đã lưu</div></div></div><div class="scroller"><table><thead><tr><th>Khách hàng</th><th>Liên hệ</th><th>Địa chỉ</th><th class="right">Số đơn</th><th class="right">Doanh thu</th><th>Lần gần nhất</th><th>Thao tác</th></tr></thead><tbody>${state.customers.length?state.customers.map(c=>{const s=customerStats(c);return`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone)}</td><td>${esc(c.address||'—')}</td><td class="right">${s.count}</td><td class="right strong">${money(s.revenue)}</td><td>${s.last?dateVN(s.last):'—'}</td><td class="nowrap"><button class="btn ghost sm" onclick="editCustomer('${c.id}')">Sửa</button> <button class="btn danger sm" onclick="deleteCustomer('${c.id}')">Xóa</button></td></tr>`}).join(''):'<tr><td colspan="7"><div class="empty">Chưa có khách hàng. Có thể thêm tại đây hoặc lưu khi tạo đơn.</div></td></tr>'}</tbody></table></div></div><div class="card"><h2 class="card-title">Thêm khách hàng</h2><p class="card-sub">Thông tin này có thể được chọn lại nhanh khi tạo đơn tiếp theo.</p><div class="field" style="margin-top:15px"><label>Tên khách hàng *</label><input id="newCustomerName" placeholder="Nguyễn Văn An"></div><div class="field" style="margin-top:12px"><label>Số điện thoại *</label><input id="newCustomerPhone" inputmode="tel" placeholder="09xx..."></div><div class="field" style="margin-top:12px"><label>Địa chỉ</label><textarea id="newCustomerAddress" placeholder="Địa chỉ khách hàng"></textarea></div><button class="btn primary" style="margin-top:14px;width:100%" onclick="addCustomer()">＋ Lưu khách hàng</button></div></div>`;
-  }
-  function addCustomer(){if(!requireAdmin())return;const name=document.getElementById('newCustomerName').value.trim(),phone=document.getElementById('newCustomerPhone').value.trim(),address=document.getElementById('newCustomerAddress').value.trim();if(!name||!phone)return toast('Hãy nhập tên và số điện thoại');upsertCustomer(name,phone,address);save();renderCustomers();toast('Đã lưu thông tin khách hàng')}
-  function editCustomer(id){if(!requireAdmin())return;const c=state.customers.find(x=>String(x.id)===String(id));if(!c)return;const name=prompt('Tên khách hàng:',c.name);if(name===null)return;const phone=prompt('Số điện thoại:',c.phone);if(phone===null)return;const address=prompt('Địa chỉ:',c.address||'');if(address===null)return;if(!name.trim()||!phone.trim())return toast('Tên và số điện thoại không được để trống');c.name=name.trim();c.phone=phone.trim();c.address=address.trim();c.updatedAt=today();save();renderCustomers();toast('Đã cập nhật khách hàng')}
-  function deleteCustomer(id){if(!requireAdmin())return;const c=state.customers.find(x=>String(x.id)===String(id));if(c&&confirm('Xóa khách hàng '+c.name+'? Lịch sử đơn hàng vẫn được giữ.')){state.customers=state.customers.filter(x=>String(x.id)!==String(id));save();renderCustomers();toast('Đã xóa khách hàng')}}
-  Object.assign(window,{toggleOrderStatus,addCustomer,editCustomer,deleteCustomer});
-
-  function renderStaff(){
-    if(!isAdmin())return go('dashboard');
-    document.getElementById('staff').innerHTML=heading('Thiết lập nhân sự','Quản lý nhân viên')+`<div class="grid two"><div class="tblwrap"><div class="table-head"><div><b>Danh sách nhân viên nhập đơn</b><div class="small muted">${state.employees.length} nhân viên</div></div></div><div class="scroller"><table><thead><tr><th>Nhân viên</th><th>Tài khoản</th><th>Trạng thái</th><th></th></tr></thead><tbody>${state.employees.map((e,i)=>{const u=state.users.find(x=>x.employeeName===e);return`<tr><td><b>${esc(e)}</b></td><td>${u?esc(u.username):'<span class="muted">Chưa cấp</span>'}</td><td><span class="account-status"><i class="status-dot ${u&&u.active!==false?'on':''}"></i>${u?(u.active!==false?'Đang hoạt động':'Đã khóa'):'Chưa có tài khoản'}</span></td><td class="right">${u?'<span class="small muted">Xóa tài khoản trước</span>':`<button class="btn danger sm" onclick="deleteEmployee(${i})">Xóa</button>`}</td></tr>`}).join('')}</tbody></table></div></div><div class="card"><h2 class="card-title">Thêm nhân viên</h2><p class="card-sub">Sau khi thêm hồ sơ, sang mục Quản lý người dùng để cấp tài khoản đăng nhập.</p><div class="field" style="margin-top:16px"><label>Họ và tên nhân viên</label><input id="newEmployee" placeholder="Ví dụ: Nguyễn Văn An"></div><button class="btn primary" style="margin-top:12px;width:100%" onclick="addEmployee()">＋ Thêm nhân viên</button></div></div>`;
-  }
-
-  function renderUsers(){
-    if(!isAdmin())return go('dashboard');
-    const available=state.employees.filter(e=>!state.users.some(u=>u.employeeName===e));
-    document.getElementById('users').innerHTML=heading('Phân quyền truy cập','Quản lý người dùng')+`<div class="notice"><b>Phân quyền:</b> Admin được sử dụng toàn bộ chức năng. Nhân viên được xem Tổng quan, tạo đơn mới và nhập chi phí; không được sửa hoặc xóa dữ liệu đã lưu.</div><div class="grid two"><div class="tblwrap"><div class="table-head"><div><b>Danh sách tài khoản</b><div class="small muted">Mật khẩu không hiển thị; Admin có thể đặt lại.</div></div></div><div class="scroller"><table><thead><tr><th>Tên đăng nhập</th><th>Nhân viên</th><th>Quyền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>${state.users.map(u=>`<tr><td><b>${esc(u.username)}</b></td><td>${esc(u.employeeName||'')}</td><td><span class="pill ${u.role==='admin'?'role-admin':'role-staff'}">${u.role==='admin'?'Admin':'Nhân viên'}</span></td><td><span class="account-status"><i class="status-dot ${u.active!==false?'on':''}"></i>${u.active!==false?'Hoạt động':'Đã khóa'}</span></td><td class="nowrap"><button class="btn ghost sm" onclick="resetUserPassword('${u.id}')">Đổi mật khẩu</button> ${u.role!=='admin'?`<button class="btn ghost sm" onclick="toggleUser('${u.id}')">${u.active!==false?'Khóa':'Mở khóa'}</button> <button class="btn danger sm" onclick="deleteUser('${u.id}')">Xóa</button>`:''}</td></tr>`).join('')}</tbody></table></div></div><div class="card"><h2 class="card-title">Cấp tài khoản nhân viên</h2><p class="card-sub">Mỗi nhân viên được cấp một tài khoản riêng.</p>${available.length?`<div class="field" style="margin-top:15px"><label>Nhân viên</label><select id="userEmployee">${available.map(e=>`<option>${esc(e)}</option>`).join('')}</select></div><div class="field" style="margin-top:12px"><label>Tên đăng nhập</label><input id="newUsername" autocomplete="off" placeholder="Ví dụ: nhanvien01"></div><div class="field" style="margin-top:12px"><label>Mật khẩu</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="Tối thiểu 4 ký tự"></div><button class="btn primary" style="margin-top:14px;width:100%" onclick="addUser()">＋ Tạo tài khoản</button>`:'<div class="empty" style="padding:30px 10px">Tất cả nhân viên đã được cấp tài khoản.<br>Hãy thêm nhân viên mới nếu cần.</div>'}</div></div>`;
-  }
-
-  function renderSettings(){if(!isAdmin())return go('dashboard');const customerUrl=(location.origin&&location.origin!=='null'?location.origin+location.pathname:location.href.split('?')[0].split('#')[0])+'?customer=1';document.getElementById('settings').innerHTML=heading('Thiết lập vận hành','Cấu hình & dữ liệu')+`<div class="settings-grid"><div class="tblwrap"><div class="table-head"><div><b>Danh mục mặt hàng</b><div class="small muted">Thêm, sửa, xóa mặt hàng; cost được tính tự động từ chi phí nhập thực tế</div></div><div style="display:flex;gap:7px"><button class="btn ghost sm" onclick="addProduct()">＋ Thêm mặt hàng</button><button class="btn primary sm" onclick="saveProductConfig()">Lưu cấu hình</button></div></div><div class="scroller" style="max-height:590px"><table><thead><tr><th>Mặt hàng</th><th>Nhóm</th><th class="right">Giá bán</th><th class="right">Cost</th><th></th></tr></thead><tbody>${state.products.map(p=>`<tr><td><input data-name="${p.id}" value="${esc(p.name)}" style="width:180px;padding:7px;border:1px solid var(--line);border-radius:8px"></td><td><input data-category="${p.id}" value="${esc(p.category)}" style="width:110px;padding:7px;border:1px solid var(--line);border-radius:8px"></td><td class="right"><input data-price="${p.id}" value="${p.price}" inputmode="numeric" style="width:100px;text-align:right;padding:7px;border:1px solid var(--line);border-radius:8px"></td><td class="right"><span class="small muted">Tự tính từ chi phí nhập</span></td><td><button class="btn danger sm" onclick="deleteProduct('${p.id}')">Xóa</button></td></tr>`).join('')}</tbody></table></div></div><div><div class="card"><h2 class="card-title">QR cho khách tự tạo đơn</h2><p class="small muted">Đăng file này lên GitHub Pages/hosting, sau đó khách quét QR để mở thẳng màn hình tạo đơn.</p><div id="customerQr" style="display:grid;place-items:center;margin:14px 0"><img alt="QR tạo đơn" width="190" height="190" src="https://quickchart.io/qr?size=190&text=${encodeURIComponent(customerUrl)}" style="border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff"></div><div class="field"><label>Link khách hàng</label><input value="${esc(customerUrl)}" readonly onclick="this.select()"></div><button class="btn ghost" style="width:100%;margin-top:10px" onclick="copyCustomerLink()">Sao chép link</button><div class="notice" style="margin-top:12px;margin-bottom:0"><b>Lưu ý:</b> Phiên bản HTML hiện tại lưu dữ liệu bằng localStorage. Nếu khách mở trên điện thoại khác, đơn tạo trên máy khách chưa tự đồng bộ về máy Admin. Muốn nhận đơn tập trung theo thời gian thực cần kết nối Firebase/backend.</div></div><div class="card" style="margin-top:16px"><h2 class="card-title">Sao lưu dữ liệu</h2><p class="small muted">Nên xuất file sao lưu định kỳ vì dữ liệu đang lưu trên trình duyệt của máy này.</p><div style="display:grid;gap:8px;margin-top:14px"><button class="btn green" onclick="exportBackup()">⇩ Tải file sao lưu</button><label class="btn ghost file-label">⇧ Khôi phục từ file<input type="file" accept="application/json" onchange="importBackup(event)"></label><button class="btn danger" onclick="resetData()">Xóa toàn bộ dữ liệu</button></div></div></div></div>`}
-  function saveProductConfig(){if(!requireAdmin())return;state.products.forEach(p=>{const name=document.querySelector(`[data-name="${p.id}"]`),category=document.querySelector(`[data-category="${p.id}"]`),price=document.querySelector(`[data-price="${p.id}"]`);p.name=(name?.value||p.name).trim()||p.name;p.category=(category?.value||p.category).trim()||'Khác';p.price=Math.max(0,Number(String(price.value).replace(/\D/g,''))||0)});save();initFilters();renderSettings();toast('Đã lưu cấu hình mặt hàng')}
-  function addProduct(){if(!requireAdmin())return;const name=prompt('Tên mặt hàng mới:');if(name===null||!name.trim())return;const category=prompt('Nhóm mặt hàng:','Đồ ăn');if(category===null)return;const price=prompt('Giá bán (VNĐ):','0');if(price===null)return;const id='sp-'+Date.now();state.products.push({id,name:name.trim(),category:category.trim()||'Khác',price:Math.max(0,Number(String(price).replace(/\D/g,''))||0),cost:0});save();initFilters();renderSettings();toast('Đã thêm mặt hàng')}
-  function deleteProduct(id){if(!requireAdmin())return;const p=product(id);if(!p)return;const used=state.orders.some(o=>(o.items||[]).some(i=>i.productId===id))||state.expenses.some(e=>e.targetId===id||(e.targetIds||[]).includes(id));if(used&&!confirm('Mặt hàng '+p.name+' đã có dữ liệu lịch sử. Xóa khỏi danh mục? Lịch sử đơn cũ vẫn được giữ.'))return;if(!used&&!confirm('Xóa mặt hàng '+p.name+'?'))return;state.products=state.products.filter(x=>x.id!==id);delete cart[id];save();initFilters();renderSettings();toast('Đã xóa mặt hàng')}
-  function copyCustomerLink(){const url=(location.origin&&location.origin!=='null'?location.origin+location.pathname:location.href.split('?')[0].split('#')[0])+'?customer=1';navigator.clipboard?.writeText(url).then(()=>toast('Đã sao chép link khách hàng')).catch(()=>prompt('Sao chép link này:',url))}
-  function addEmployee(){if(!requireAdmin())return;const el=document.getElementById('newEmployee'),name=el.value.trim();if(!name)return toast('Hãy nhập tên nhân viên');if(state.employees.some(e=>e.toLowerCase()===name.toLowerCase()))return toast('Nhân viên đã có trong danh sách');state.employees.push(name);save();renderStaff();toast('Đã thêm nhân viên')}
-  function deleteEmployee(i){if(!requireAdmin())return;const name=state.employees[i];if(state.users.some(u=>u.employeeName===name))return toast('Hãy xóa tài khoản của nhân viên trước');if(confirm('Xóa nhân viên này khỏi danh sách? Lịch sử đơn cũ vẫn được giữ.')){state.employees.splice(i,1);save();renderStaff();toast('Đã xóa nhân viên')}}
-  function addUser(){if(!requireAdmin())return;const employee=document.getElementById('userEmployee')?.value,username=document.getElementById('newUsername')?.value.trim(),password=document.getElementById('newPassword')?.value;if(!employee||!username||!password)return toast('Hãy nhập đủ nhân viên, user và mật khẩu');if(password.length<4)return toast('Mật khẩu cần ít nhất 4 ký tự');if(state.users.some(u=>u.username.toLowerCase()===username.toLowerCase()))return toast('Tên đăng nhập đã tồn tại');state.users.push({id:'u'+Date.now(),username,password,role:'staff',employeeName:employee,active:true});save();renderUsers();toast('Đã cấp tài khoản cho '+employee)}
-  function toggleUser(id){if(!requireAdmin())return;const u=state.users.find(x=>String(x.id)===String(id));if(!u||u.role==='admin')return;u.active=u.active===false;save();renderUsers();toast(u.active?'Đã mở khóa tài khoản':'Đã khóa tài khoản')}
-  function deleteUser(id){if(!requireAdmin())return;const u=state.users.find(x=>String(x.id)===String(id));if(!u||u.role==='admin')return;if(confirm('Xóa tài khoản '+u.username+'? Hồ sơ nhân viên và lịch sử đơn vẫn được giữ.')){state.users=state.users.filter(x=>String(x.id)!==String(id));save();renderUsers();toast('Đã xóa tài khoản')}}
-  function resetUserPassword(id){if(!requireAdmin())return;const u=state.users.find(x=>String(x.id)===String(id));if(!u)return;const password=prompt('Nhập mật khẩu mới cho '+u.username+':');if(password===null)return;if(password.length<4)return toast('Mật khẩu cần ít nhất 4 ký tự');u.password=password;save();toast('Đã đổi mật khẩu cho '+u.username)}
-  function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-  function exportBackup(){if(!requireAdmin())return;download('Nem_Nuong_Dung_Hien_Sao_Luu_'+today()+'.json',JSON.stringify(state,null,2),'application/json')}
-  function importBackup(ev){if(!requireAdmin())return;const file=ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);if(!Array.isArray(data.orders)||!Array.isArray(data.expenses)||!Array.isArray(data.products))throw new Error();if(confirm('Khôi phục dữ liệu từ file này? Dữ liệu hiện tại sẽ bị thay thế.')){state={...defaultState(),...data,users:Array.isArray(data.users)&&data.users.length?data.users:defaultState().users,customers:Array.isArray(data.customers)?data.customers:[]};save();initFilters();render();toast('Khôi phục dữ liệu thành công')}}catch(e){alert('File sao lưu không hợp lệ.')}};reader.readAsText(file)}
-  function resetData(){if(!requireAdmin())return;if(confirm('Xóa toàn bộ đơn hàng, chi phí, khách hàng, tài khoản nhân viên và cấu hình? Thao tác này không thể hoàn tác.')){state=defaultState();cart={};save();initFilters();toast('Đã đặt lại toàn bộ dữ liệu');logout()}}
-  Object.assign(window,{saveProductConfig,addProduct,deleteProduct,copyCustomerLink,addEmployee,deleteEmployee,addUser,toggleUser,deleteUser,resetUserPassword,exportBackup,importBackup,resetData});
-
-  function render(){if(activeSection==='dashboard')renderDashboard();if(activeSection==='neworder')renderNewOrder();if(activeSection==='expenses')renderExpenses();if(activeSection==='customers')renderCustomers();if(activeSection==='staff')renderStaff();if(activeSection==='users')renderUsers();if(activeSection==='settings')renderSettings()}
-  document.getElementById('receiptModal').addEventListener('click',e=>{if(e.target.id==='receiptModal')closeReceipt()});
-  initFilters();render();
-  const customerMode=URL_PARAMS.get('customer')==='1';
-  const remembered=state.users.find(u=>String(u.id)===sessionStorage.getItem(SESSION_KEY)&&u.active!==false);
-  if(customerMode){document.body.classList.add('customer-mode');currentUser={id:'guest',username:'Khách hàng',employeeName:'Khách tự đặt',role:'staff',active:true};document.getElementById('loginScreen').classList.add('hidden');document.getElementById('appShell').classList.remove('locked');document.getElementById('sidebar').classList.add('hidden');document.querySelector('.main').style.marginLeft='0';document.querySelector('.main').style.width='100%';document.querySelectorAll('.filters>select,.filters>input').forEach(x=>x.classList.add('hidden'));document.querySelector('.userbox').classList.add('hidden');go('neworder');document.getElementById('pageTitle').textContent='Gọi món';document.getElementById('pageSub').textContent='Chọn món và gửi yêu cầu tới quán'}else if(remembered)applySession(remembered);else setTimeout(()=>document.getElementById('loginUsername').focus(),0);
-  </script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCKE6w1S3h2XO15WhMBKD5Y0anBYFJNnyQ",
-      authDomain: "nem-nuong-dh.firebaseapp.com",
-      projectId: "nem-nuong-dh",
-      storageBucket: "nem-nuong-dh.firebasestorage.app",
-      messagingSenderId: "878950464315",
-      appId: "1:878950464315:web:78d4278e6a5aa64fcb951e",
-      measurementId: "G-DD4N62ELLQ"
-    };
-
-    try {
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-      await signInAnonymously(auth);
-      const sharedRef = doc(db, "restaurant", "sharedState");
-      let applyingRemote = false;
-      let saveTimer = null;
-
-      window.firebaseSaveState = async (data) => {
-        if (applyingRemote) return;
-        await setDoc(sharedRef, { payload: JSON.parse(JSON.stringify(data)), updatedAt: serverTimestamp() });
-      };
-
-      const first = await getDoc(sharedRef);
-      if (first.exists() && first.data().payload) {
-        applyingRemote = true;
-        window.applyFirebaseState(first.data().payload);
-        applyingRemote = false;
-      } else {
-        await setDoc(sharedRef, { payload: window.getAppStateForFirebase(), updatedAt: serverTimestamp() });
-      }
-      if(window.markFirebaseReady)window.markFirebaseReady();
-
-      onSnapshot(sharedRef, snap => {
-        if (!snap.exists() || !snap.data().payload) return;
-        applyingRemote = true;
-        window.applyFirebaseState(snap.data().payload);
-        applyingRemote = false;
-      }, err => console.error("Firebase realtime sync:", err));
-
-      console.log("Firebase connected: restaurant/sharedState");
-    } catch (e) {
-      console.error("Firebase initialization failed:", e); if(window.markFirebaseReady)window.markFirebaseReady();
-    }
-  </script>
-</body>
-</html>
+el.pasteBox.addEventListener('paste',e=>{
+ const f=[...e.clipboardData.files].find(f=>f.type.startsWith('image/'));
+ if(!f){alert('Clipboard chưa có hình ảnh. Hãy Copy image hoặc chụp màn hình rồi Ctrl+V.');return}
+ if(f.size>2.5*1024*1024){alert('Ảnh khá lớn. Nên dùng ảnh dưới 2.5 MB để tránh dữ liệu Firebase/localStorage quá nặng.');return}
+ const r=new FileReader();
+ r.onload=()=>{el.image.value=r.result;showPreview();el.pasteBox.classList.add('has');el.pasteBox.innerHTML='✓ Đã dán ảnh vào dữ liệu<br><span class="hint">Bạn có thể Ctrl+V ảnh khác để thay thế.</span>'};
+ r.readAsDataURL(f);
+});
+Object.assign(window,{page,render,renderModels,renderOrders,addCurrent,openModel,editModel,delModel,openOrder,editOrder,delOrder,saveModel,saveOrder,showPreview});
+loadFirebase();
+</script>
+</body></html>
