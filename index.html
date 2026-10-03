@@ -106,8 +106,14 @@ const el={
  modelForm:$('modelForm'), modelId:$('modelId'), modelTitle:$('modelTitle'),
  url:$('url'), modelName:$('name'), category:$('category'), image:$('image'),
  price:$('price'), cost:$('cost'), note:$('note'), prev:$('prev'),
- pasteBox:$('pasteBox'), imgMode:$('imgMode'), modelDlg:$('modelDlg')
+ pasteBox:$('pasteBox'), imgMode:$('imgMode'), modelDlg:$('modelDlg'),
+ cats:$('cats'), dbStatus:$('dbStatus'), filters:$('filters'), grid:$('grid'),
+ countModels:$('countModels'), countOrders:$('countOrders'), search:$('search'), addBtn:$('addBtn'),
+ mModels:$('mModels'), mOrders:$('mOrders'), modelsPage:$('modelsPage'), ordersPage:$('ordersPage'),
+ orderDlg:$('orderDlg'), orderForm:$('orderForm'), orderId:$('orderId'), orderName:$('orderName'),
+ orderNote:$('orderNote'), orderTitle:$('orderTitle'), picker:$('picker'), orders:$('orders')
 };
+const {cats:catsEl,dbStatus,filters,grid,countModels,countOrders,search,addBtn,mModels,mOrders,modelsPage,ordersPage,orderDlg,orderForm,orderId,orderName,orderNote,orderTitle,picker,orders}=el;
 const KM='print3d_models_v2', KO='print3d_orders_v2';
 let models=[];
 let orderData=[];
@@ -134,8 +140,8 @@ async function loadFirebase(){
       }
     }
   }catch(err){
-    console.error(err); dbStatus.textContent='● Lỗi Firebase'; dbStatus.style.color='#b42318';
-    alert('Không kết nối được Firebase: '+err.message);
+    console.error('Khởi tạo ứng dụng/Firebase thất bại:',err); dbStatus.textContent='● Lỗi kết nối/hiển thị'; dbStatus.style.color='#b42318';
+    alert('Không thể khởi tạo ứng dụng: '+err.message);
   }
 }
 async function saveModelDb(m){await setDoc(doc(db,'models',m.id),m)}
@@ -150,10 +156,11 @@ function money(v){v=Number(v||0);return v?new Intl.NumberFormat('vi-VN').format(
 function page(p){current=p;mModels.classList.toggle('active',p==='models');mOrders.classList.toggle('active',p==='orders');modelsPage.classList.toggle('hidden',p!=='models');ordersPage.classList.toggle('hidden',p!=='orders');search.placeholder=p==='models'?'🔎  Tìm mẫu theo tên, tag, nguồn...':'🔎  Tìm đơn hàng...';addBtn.textContent=p==='models'?'＋ Thêm mẫu':'＋ Thêm đơn';search.value='';render()}
 function addCurrent(){current==='models'?openModel():openOrder()}
 function render(){current==='models'?renderModels():renderOrders()}
+function setActiveCategory(c){active=c;renderModels()}
 function renderModels(){
  let cs=['Tất cả',...cats()];if(!cs.includes(active))active='Tất cả';
- filters.innerHTML=cs.map(c=>`<button class="chip ${c===active?'active':''}" onclick="active=${JSON.stringify(c)};renderModels()">${E(c)}</button>`).join('');
- catsEl=document.getElementById('cats');catsEl.innerHTML=cats().map(c=>`<option value="${E(c)}">`).join('');
+ filters.innerHTML=cs.map(c=>`<button class="chip ${c===active?'active':''}" onclick='setActiveCategory(${JSON.stringify(c)})'>${E(c)}</button>`).join('');
+ catsEl.innerHTML=cats().map(c=>`<option value="${E(c)}">`).join('');
  let q=search.value.toLowerCase().trim(), list=models.filter(m=>(active==='Tất cả'||m.category===active)&&(!q||[m.name,m.category,m.note,sourceOf(m.url)].join(' ').toLowerCase().includes(q)));
  countModels.textContent=`${models.length} mẫu`;
  grid.innerHTML=list.length?list.map(m=>`<article class="card">
@@ -175,7 +182,7 @@ async function saveModel(e){
    const m={id,url:el.url.value.trim(),name:el.modelName.value.trim(),category:el.category.value.trim(),image:el.image.value.trim(),price:Number(el.price.value||0),cost:Number(el.cost.value||0),note:el.note.value.trim(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
    if(!m.name||!m.category||!m.url){alert('Vui lòng nhập đủ Tên mẫu, Phân loại và Link mẫu.');return}
    let i=models.findIndex(x=>x.id===id); i>=0?models[i]=m:models.unshift(m);
-   persist(); el.modelDlg.close(); renderModels();
+   await saveModelDb(m); el.modelDlg.close(); renderModels();
  }catch(err){console.error(err);alert('Không thể lưu mẫu: '+err.message)}
 }
 async function delModel(id){if(orderData.some(o=>o.items.some(i=>i.modelId===id)))return alert('Mẫu đang được dùng trong đơn hàng nên chưa thể xóa.');if(confirm('Xóa mẫu này?')){try{await deleteModelDb(id);models=models.filter(x=>x.id!==id);renderModels()}catch(err){alert('Không thể xóa mẫu: '+err.message)}}}
@@ -194,7 +201,7 @@ el.pasteBox.addEventListener('paste',e=>{
  r.onload=()=>{el.image.value=r.result;showPreview();el.pasteBox.classList.add('has');el.pasteBox.innerHTML='✓ Đã dán ảnh vào dữ liệu<br><span class="hint">Bạn có thể Ctrl+V ảnh khác để thay thế.</span>'};
  r.readAsDataURL(f);
 });
-Object.assign(window,{page,render,renderModels,renderOrders,addCurrent,openModel,editModel,delModel,openOrder,editOrder,delOrder,saveModel,saveOrder,showPreview});
+Object.assign(window,{page,render,renderModels,renderOrders,setActiveCategory,addCurrent,openModel,editModel,delModel,openOrder,editOrder,delOrder,saveModel,saveOrder,showPreview,modelDlg:el.modelDlg,modelForm:el.modelForm,orderDlg,orderForm});
 loadFirebase();
 </script>
 </body></html>
