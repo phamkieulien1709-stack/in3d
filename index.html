@@ -24,9 +24,10 @@ main{min-width:0}.head{height:68px;background:#fff;border-bottom:1px solid var(-
 .pastebox{border:1px dashed #b9c5d6;border-radius:10px;padding:13px;text-align:center;background:#f8fafc;color:#64748b;cursor:pointer}.pastebox:focus{outline:2px solid #bcd0f5}.pastebox.has{border-style:solid;color:#137333;background:#f1fbf4}
 .order-list{display:grid;gap:12px}.order{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px}.orderhead{display:flex;justify-content:space-between;gap:10px}.ordername{font-size:17px;font-weight:800}.note{color:#657087;white-space:pre-wrap;margin:6px 0 12px}.items{display:flex;gap:8px;flex-wrap:wrap}.item{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:7px 9px;background:#fafcff}.item img{width:38px;height:38px;border-radius:7px;object-fit:cover}.qty{font-weight:800;color:var(--blue)}
 .empty{padding:55px;text-align:center;background:#fff;border:1px dashed #cbd4e1;border-radius:12px;color:var(--muted)}
-dialog{width:min(620px,94vw);border:0;border-radius:16px;padding:0;box-shadow:0 25px 70px #0004}dialog::backdrop{background:#14223899}.modal{padding:22px}.modal h2{margin:0 0 17px}.form{display:grid;gap:12px}.form label{font-size:12px;font-weight:750;color:#526078}.form input,.form textarea{width:100%;margin-top:5px;padding:10px;border:1px solid #dce3ed;border-radius:9px;font:inherit}.form textarea{min-height:75px}.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
+dialog{width:min(620px,94vw);border:0;border-radius:16px;padding:0;box-shadow:0 25px 70px #0004}#orderDlg{width:min(760px,96vw);max-height:92vh}.order-modal{padding:22px}.order-picker-tools{display:flex;gap:8px;align-items:center;margin-top:5px}.order-picker-tools input{margin:0!important}.picker{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}.pick{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:12px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}.pick:last-child{border:0}.pick-main{display:grid!important;grid-template-columns:22px 48px minmax(0,1fr);gap:10px!important;align-items:center;min-width:0}.pick-main input[type=checkbox]{width:18px!important;height:18px;margin:0!important}.pick img{width:48px!important;height:48px!important;object-fit:cover;border-radius:8px}.pick-info{min-width:0}.pick-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}.pick-info .hint{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pick-qty{display:flex;align-items:center;gap:6px}.pick-qty span{font-size:11px;color:var(--muted)}.pick input[type=number]{width:68px!important;margin:0!important;padding:9px 7px!important;text-align:center}.picker-empty{padding:24px;text-align:center;color:var(--muted)}@media(max-width:560px){#orderDlg{width:96vw}.order-modal{padding:16px}.pick{grid-template-columns:minmax(0,1fr) 76px;padding:9px}.pick-main{grid-template-columns:20px 42px minmax(0,1fr)}.pick img{width:42px!important;height:42px!important}.pick-qty span{display:none}.pick input[type=number]{width:62px!important}}dialog::backdrop{background:#14223899}.modal{padding:22px}.modal h2{margin:0 0 17px}.form{display:grid;gap:12px}.form label{font-size:12px;font-weight:750;color:#526078}.form input,.form textarea{width:100%;margin-top:5px;padding:10px;border:1px solid #dce3ed;border-radius:9px;font:inherit}.form textarea{min-height:75px}.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
 .preview{display:flex;gap:12px;align-items:center;padding:10px;background:#f6f8fb;border-radius:10px}.preview img{width:72px;height:72px;object-fit:cover;border-radius:9px;background:#e8edf4}.hint{font-size:11px;color:#7b8498}
-.picker{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:10px}.pick{display:grid;grid-template-columns:1fr 72px;gap:8px;align-items:center;padding:8px;border-bottom:1px solid var(--line)}.pick:last-child{border:0}.pick label{display:flex;align-items:center;gap:8px}.pick img{width:38px;height:38px;object-fit:cover;border-radius:7px}.pick input[type=number]{width:65px;margin:0}
+
+#detailDlg{width:min(980px,96vw);max-height:94vh}.detail-shell{margin:0}.detail-head{background:linear-gradient(110deg,#653b96,#443276);color:#fff;padding:15px 22px;display:flex;align-items:center;gap:12px}.detail-head .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#d7a9ff;color:#3d2460;font-size:20px;font-weight:900}.detail-head h2{margin:0;font-size:20px}.detail-main{padding:22px}.detail-back{border:0;background:none;cursor:pointer;padding:0 0 14px;color:#526078;font-weight:700}.detail-hero{display:grid;grid-template-columns:minmax(260px,42%) 1fr;gap:28px;align-items:start}.detail-photo{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;background:#edf1f6}.detail-titleline{display:flex;justify-content:space-between;gap:12px;align-items:start}.detail-title{font-size:25px;font-weight:900;margin:0 0 8px}.detail-row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.detail-row b{color:#778198;font-weight:650}.detail-row span:last-child{font-weight:750;text-align:right}.detail-link{word-break:break-all;color:#1769e0}.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.detail-actions .wide{grid-column:1/-1}.green{background:#18a765;color:#fff}.purple{background:#7540d8;color:#fff}.detail-tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);margin-top:22px}.detail-tab{border:0;background:none;padding:12px 2px;cursor:pointer;font-weight:800;color:#667085;border-bottom:3px solid transparent}.detail-tab.active{color:#172238;border-bottom-color:#1769e0}.detail-panel{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:15px;min-height:90px;background:#fff}.order-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}.statbox{background:#f6f8fb;border-radius:10px;padding:12px}.statbox strong{display:block;font-size:22px;color:#1769e0}.order-uses{display:grid;gap:7px}.order-use{display:flex;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 10px}.clickhint{font-size:10px;color:#7b8498;margin-top:6px}@media(max-width:650px){.detail-hero{grid-template-columns:1fr}.detail-actions{grid-template-columns:1fr}.detail-actions .wide{grid-column:auto}.detail-row{grid-template-columns:120px 1fr}.detail-tabs{gap:10px;overflow:auto}.order-summary{grid-template-columns:1fr}}
 .hidden{display:none!important}.status{margin-left:auto;font-size:11px;color:#69758a}
 @media(max-width:750px){.app{grid-template-columns:1fr}aside{height:auto;position:static;padding:9px}.logo{padding:5px 8px}.menu{grid-template-columns:1fr 1fr}.menu button{padding:9px}.head{top:0;padding:0 10px}.content{padding:15px 10px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.status{display:none}}
 </style>
@@ -70,11 +71,13 @@ dialog{width:min(620px,94vw);border:0;border-radius:16px;padding:0;box-shadow:0 
 <label>Ghi chú<textarea id="note" placeholder="Màu, kích thước, lưu ý khi in..."></textarea></label>
 </form><div class="modalfoot"><button class="btn soft" onclick="modelDlg.close()">Hủy</button><button class="btn primary" onclick="modelForm.requestSubmit()">Lưu mẫu</button></div></div></dialog>
 
-<dialog id="orderDlg"><div class="modal"><h2 id="orderTitle">Thêm đơn hàng</h2>
+<dialog id="detailDlg"><div id="modelDetail"></div></dialog>
+
+<dialog id="orderDlg"><div class="modal order-modal"><h2 id="orderTitle">Thêm đơn hàng</h2>
 <form id="orderForm" class="form" onsubmit="saveOrder(event)"><input id="orderId" type="hidden">
 <label>Tên đơn *<input id="orderName" required placeholder="Tên khách / tên đơn"></label>
 <label>Ghi chú<textarea id="orderNote" placeholder="Thông tin khách, màu, deadline, yêu cầu..."></textarea></label>
-<label>Chọn mẫu từ Kho mẫu</label><div id="picker" class="picker"></div>
+<label>Chọn mẫu từ Kho mẫu<div class="order-picker-tools"><input id="pickerSearch" type="search" placeholder="🔎 Tìm theo tên mẫu, phân loại, link nguồn..." oninput="filterOrderPicker()"></div></label><div id="picker" class="picker"></div>
 </form><div class="modalfoot"><button class="btn soft" onclick="orderDlg.close()">Hủy</button><button class="btn primary" onclick="orderForm.requestSubmit()">Lưu đơn</button></div></div></dialog>
 
 <script type="module">
@@ -111,9 +114,10 @@ const el={
  countModels:$('countModels'), countOrders:$('countOrders'), search:$('search'), addBtn:$('addBtn'),
  mModels:$('mModels'), mOrders:$('mOrders'), modelsPage:$('modelsPage'), ordersPage:$('ordersPage'),
  orderDlg:$('orderDlg'), orderForm:$('orderForm'), orderId:$('orderId'), orderName:$('orderName'),
- orderNote:$('orderNote'), orderTitle:$('orderTitle'), picker:$('picker'), orders:$('orders')
+ orderNote:$('orderNote'), orderTitle:$('orderTitle'), picker:$('picker'), pickerSearch:$('pickerSearch'), orders:$('orders'),
+ detailDlg:$('detailDlg'), modelDetail:$('modelDetail')
 };
-const {cats:catsEl,dbStatus,filters,grid,countModels,countOrders,search,addBtn,mModels,mOrders,modelsPage,ordersPage,orderDlg,orderForm,orderId,orderName,orderNote,orderTitle,picker,orders}=el;
+const {cats:catsEl,dbStatus,filters,grid,countModels,countOrders,search,addBtn,mModels,mOrders,modelsPage,ordersPage,orderDlg,orderForm,orderId,orderName,orderNote,orderTitle,picker,pickerSearch,orders,detailDlg,modelDetail}=el;
 const KM='print3d_models_v2', KO='print3d_orders_v2';
 let models=[];
 let orderData=[];
@@ -149,7 +153,26 @@ async function saveOrderDb(o){await setDoc(doc(db,'orders',o.id),o)}
 async function deleteModelDb(id){await deleteDoc(doc(db,'models',id))}
 async function deleteOrderDb(id){await deleteDoc(doc(db,'orders',id))}
 
-function sourceOf(u=''){try{let h=new URL(u).hostname.replace('www.','');if(h.includes('makerworld'))return'MakerWorld';if(h.includes('printables'))return'Printables';if(h.includes('thingiverse'))return'Thingiverse';return h}catch{return'Nguồn'}}
+function normalizeSourceUrl(url){
+ let u=String(url||'').trim();
+ if(!u) return '';
+ // Chỉ cho phép link web. Tự bổ sung https:// nếu người dùng lưu thiếu giao thức.
+ if(!/^https?:\/\//i.test(u)) u='https://'+u.replace(/^\/\//,'');
+ try{
+   const parsed=new URL(u);
+   if(!['http:','https:'].includes(parsed.protocol)) return '';
+   return parsed.href;
+ }catch(e){ return ''; }
+}
+function openSource(url){
+ const u=normalizeSourceUrl(url);
+ if(!u){ alert('Mẫu này chưa có link nguồn hợp lệ. Hãy bấm “Sửa thông tin mẫu” và kiểm tra Link mẫu.'); return; }
+ // Dùng thẻ <a> thật thay vì window.open để tránh trình duyệt chặn popup.
+ const a=document.createElement('a');
+ a.href=u; a.target='_blank'; a.rel='noopener noreferrer';
+ document.body.appendChild(a); a.click(); a.remove();
+}
+function sourceOf(u=''){try{let h=new URL(normalizeSourceUrl(u)).hostname.replace('www.','');if(h.includes('makerworld'))return'MakerWorld';if(h.includes('printables'))return'Printables';if(h.includes('thingiverse'))return'Thingiverse';return h||'Nguồn'}catch{return'Nguồn'}}
 function cats(){return[...new Set(models.map(x=>x.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'))}
 function pic(m){return m.image?`<img src="${E(m.image)}" onerror="this.style.display='none'">`:`<span class="ph">🧩</span>`}
 function money(v){v=Number(v||0);return v?new Intl.NumberFormat('vi-VN').format(v)+'đ':'—'}
@@ -164,14 +187,61 @@ function renderModels(){
  let q=search.value.toLowerCase().trim(), list=models.filter(m=>(active==='Tất cả'||m.category===active)&&(!q||[m.name,m.category,m.note,sourceOf(m.url)].join(' ').toLowerCase().includes(q)));
  countModels.textContent=`${models.length} mẫu`;
  grid.innerHTML=list.length?list.map(m=>`<article class="card">
- <div class="pic" onclick="window.open(${JSON.stringify(m.url)},'_blank')">${pic(m)}</div>
- <div class="cardbody"><div class="name" title="${E(m.name)}">${E(m.name)}</div>
+ <div class="pic" onclick="showModelDetail('${m.id}')">${pic(m)}</div>
+ <div class="cardbody"><div class="name" title="${E(m.name)}" style="cursor:pointer" onclick="showModelDetail('${m.id}')">${E(m.name)}</div>
  <div class="tags"><span class="tag">${E(m.category)}</span><span class="tag source">${E(sourceOf(m.url))}</span></div>
  <div class="money"><span class="sell">Bán: ${money(m.price)}</span><span class="cost">CP: ${money(m.cost)}</span></div>
- <div class="card-actions"><button class="btn soft" onclick="editModel('${m.id}')">✎ Sửa</button><button class="btn danger" onclick="delModel('${m.id}')">🗑 Xóa</button></div>
+ <div class="clickhint">Nhấn ảnh hoặc tên để xem chi tiết & số lượng đã đặt</div><div class="card-actions"><button class="btn soft" onclick="editModel('${m.id}')">✎ Sửa</button><button class="btn danger" onclick="delModel('${m.id}')">🗑 Xóa</button></div>
  </div></article>`).join(''):`<div class="empty" style="grid-column:1/-1">Chưa có mẫu. Chọn <b>Thêm mẫu</b> để bắt đầu.</div>`
 }
-function cardMenu(id){let a=prompt('Nhập 1 để Sửa, 2 để Xóa, 3 để Mở link mẫu:','1');if(a==='1')editModel(id);if(a==='2')delModel(id);if(a==='3'){let m=models.find(x=>x.id===id);if(m)window.open(m.url,'_blank')}}
+function showModelDetail(id){
+ const m=models.find(x=>x.id===id); if(!m)return;
+ const uses=[]; let totalQty=0;
+ for(const o of orderData){const it=(o.items||[]).find(i=>i.modelId===id);if(it){const qty=Number(it.qty||0);totalQty+=qty;uses.push({name:o.name||'Đơn hàng',qty,createdAt:o.createdAt,note:o.note||''});}}
+ const source=sourceOf(m.url);
+ modelDetail.innerHTML=`<div class="detail-shell">
+  <div class="detail-main">
+   <button class="detail-back" onclick="detailDlg.close()">← &nbsp;Quay lại</button>
+   <div class="detail-hero">
+    <div>${m.image?`<img class="detail-photo" src="${E(m.image)}" alt="${E(m.name)}">`:`<div class="detail-photo" style="display:grid;place-items:center;font-size:70px">🧩</div>`}</div>
+    <div>
+     <div class="detail-titleline"><div><div class="detail-title">${E(m.name)}</div><div class="tags"><span class="tag source">⬡ ${E(source)}</span><span class="tag">${E(m.category||'Chưa phân loại')}</span></div></div></div>
+     <div style="margin-top:14px">
+      <div class="detail-row"><b>Giá bán</b><span class="sell">${money(m.price)}</span></div>
+      <div class="detail-row"><b>Chi phí</b><span class="cost">${money(m.cost)}</span></div>
+      <div class="detail-row"><b>Đã đặt</b><span>${totalQty} sản phẩm</span></div>
+      <div class="detail-row"><b>Số đơn hàng</b><span>${uses.length} đơn</span></div>
+      <div class="detail-row"><b>Ngày thêm</b><span>${m.createdAt?new Date(m.createdAt).toLocaleDateString('vi-VN'):'—'}</span></div>
+     </div>
+     <div class="detail-actions">
+      <a class="btn primary" href="${E(normalizeSourceUrl(m.url))}" target="_blank" rel="noopener noreferrer" onclick="if(!normalizeSourceUrl(${JSON.stringify(m.url)})){event.preventDefault();alert('Mẫu này chưa có link nguồn hợp lệ. Hãy kiểm tra Link mẫu.')}">↗ &nbsp;Mở trang nguồn</a>
+      <button class="btn green" onclick="addModelToOrder('${m.id}')">▣ &nbsp;Thêm vào đơn</button>
+      <button class="btn purple wide" onclick="detailDlg.close();editModel('${m.id}')">✎ &nbsp;Sửa thông tin mẫu</button>
+     </div>
+    </div>
+   </div>
+   <div class="detail-tabs">
+    <button class="detail-tab active" data-tab="desc" onclick="detailTab(this,'desc','${m.id}')">Mô tả</button>
+    <button class="detail-tab" data-tab="note" onclick="detailTab(this,'note','${m.id}')">Ghi chú in</button>
+    <button class="detail-tab" data-tab="history" onclick="detailTab(this,'history','${m.id}')">Lịch sử đặt (${uses.length})</button>
+   </div>
+   <div id="detailPanel" class="detail-panel"><div>${E(m.note||'Chưa có mô tả/ghi chú cho mẫu này.')}</div><div style="margin-top:12px"><b>Nguồn:</b> <a class="detail-link" href="${E(normalizeSourceUrl(m.url))}" target="_blank" rel="noopener noreferrer">${E(m.url)}</a></div></div>
+  </div>
+ </div>`;
+ detailDlg.showModal();
+}
+function detailTab(btn,tab,id){
+ document.querySelectorAll('.detail-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ const m=models.find(x=>x.id===id);if(!m)return;const panel=$('detailPanel');
+ if(tab==='desc'){panel.innerHTML=`<div>${E(m.note||'Chưa có mô tả cho mẫu này.')}</div><div style="margin-top:12px"><b>Nguồn:</b> <a class="detail-link" href="${E(normalizeSourceUrl(m.url))}" target="_blank" rel="noopener noreferrer">${E(m.url)}</a></div>`;return}
+ if(tab==='note'){panel.innerHTML=`<b>Ghi chú in</b><div style="margin-top:9px;white-space:pre-wrap">${E(m.note||'Chưa có ghi chú in.')}</div>`;return}
+ const uses=[];for(const o of orderData){const it=(o.items||[]).find(i=>i.modelId===id);if(it)uses.push({name:o.name||'Đơn hàng',qty:Number(it.qty||0),createdAt:o.createdAt,note:o.note||''});}
+ panel.innerHTML=uses.length?`<div class="order-uses">${uses.map(u=>`<div class="order-use"><span><b>${E(u.name)}</b>${u.createdAt?`<br><span class="hint">${new Date(u.createdAt).toLocaleString('vi-VN')}</span>`:''}${u.note?`<br><span class="hint">${E(u.note)}</span>`:''}</span><b>× ${u.qty}</b></div>`).join('')}</div>`:'<div class="hint">Mẫu này chưa có trong đơn hàng nào.</div>';
+}
+function addModelToOrder(id){
+ if(!models.length)return; detailDlg.close(); orderForm.reset();orderId.value='';orderTitle.textContent='Thêm đơn hàng';renderPicker([{modelId:id,qty:1}]);orderDlg.showModal();
+}
+function cardMenu(id){let a=prompt('Nhập 1 để Sửa, 2 để Xóa, 3 để Mở link mẫu:','1');if(a==='1')editModel(id);if(a==='2')delModel(id);if(a==='3'){let m=models.find(x=>x.id===id);if(m)openSource(m.url)}}
 function openModel(){el.modelForm.reset();el.modelId.value='';el.modelTitle.textContent='Thêm mẫu';el.prev.removeAttribute('src');el.pasteBox.classList.remove('has');el.imgMode.textContent='Có thể dùng URL hoặc dán ảnh; ảnh dán sẽ tự nén trước khi lưu.';el.modelDlg.showModal()}
 function editModel(id){let m=models.find(x=>x.id===id);if(!m)return;el.modelId.value=m.id;el.url.value=m.url;el.modelName.value=m.name;el.category.value=m.category;el.image.value=m.image||'';el.price.value=m.price||'';el.cost.value=m.cost||'';el.note.value=m.note||'';el.modelTitle.textContent='Sửa mẫu';showPreview();el.pasteBox.classList.toggle('has',(m.image||'').startsWith('data:image'));el.modelDlg.showModal()}
 function showPreview(){el.prev.src=el.image.value||'';el.imgMode.textContent=(el.image.value||'').startsWith('data:image')?'Ảnh đã được nén và lưu trực tiếp trong Firestore.':'Ảnh đang được tải từ URL.'}
@@ -187,9 +257,26 @@ async function saveModel(e){
 }
 async function delModel(id){if(orderData.some(o=>o.items.some(i=>i.modelId===id)))return alert('Mẫu đang được dùng trong đơn hàng nên chưa thể xóa.');if(confirm('Xóa mẫu này?')){try{await deleteModelDb(id);models=models.filter(x=>x.id!==id);renderModels()}catch(err){alert('Không thể xóa mẫu: '+err.message)}}}
 function openOrder(){if(!models.length)return alert('Hãy thêm mẫu vào Kho mẫu trước.');orderForm.reset();orderId.value='';orderTitle.textContent='Thêm đơn hàng';renderPicker([]);orderDlg.showModal()}
-function renderPicker(items){let mp=Object.fromEntries((items||[]).map(i=>[i.modelId,i.qty]));picker.innerHTML=models.map(m=>`<div class="pick"><label><input type="checkbox" data-id="${m.id}" ${mp[m.id]?'checked':''}>${m.image?`<img src="${E(m.image)}">`:'🧩'}<span><b>${E(m.name)}</b><br><span class="hint">${E(m.category)}</span></span></label><input data-q="${m.id}" type="number" min="1" value="${mp[m.id]||1}"></div>`).join('')}
-async function saveOrder(e){e.preventDefault();let items=[...picker.querySelectorAll('[type=checkbox]:checked')].map(c=>({modelId:c.dataset.id,qty:Math.max(1,+picker.querySelector(`[data-q="${c.dataset.id}"]`).value||1)}));if(!items.length)return alert('Chọn ít nhất 1 mẫu.');let id=orderId.value||crypto.randomUUID(),old=orderData.find(x=>x.id===id),o={id,name:orderName.value.trim(),note:orderNote.value.trim(),items,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};let i=orderData.findIndex(x=>x.id===id);i>=0?orderData[i]=o:orderData.unshift(o);try{await saveOrderDb(o);orderDlg.close();renderOrders()}catch(err){alert('Không thể lưu đơn: '+err.message)}}
-function renderOrders(){let q=search.value.toLowerCase().trim(),list=orderData.filter(o=>!q||[o.name,o.note].join(' ').toLowerCase().includes(q));countOrders.textContent=`${orderData.length} đơn`;orders.innerHTML=list.length?list.map(o=>`<article class="order"><div class="orderhead"><div><div class="ordername">${E(o.name)}</div><div class="hint">${new Date(o.createdAt).toLocaleString('vi-VN')}</div></div><div><button class="btn soft" onclick="editOrder('${o.id}')">Sửa</button> <button class="btn danger" onclick="delOrder('${o.id}')">Xóa</button></div></div><div class="note">${E(o.note||'')}</div><div class="items">${o.items.map(i=>{let m=models.find(x=>x.id===i.modelId);return m?`<div class="item">${m.image?`<img src="${E(m.image)}">`:'🧩'}<span><b>${E(m.name)}</b><br><span class="qty">× ${i.qty}</span></span><button class="btn soft" onclick="window.open(${JSON.stringify(m.url)},'_blank')">↗</button></div>`:''}).join('')}</div></article>`).join(''):`<div class="empty">Chưa có đơn hàng.</div>`}
+function renderPicker(items){
+ let mp=Object.fromEntries((items||[]).map(i=>[i.modelId,i.qty]));
+ picker.dataset.selected=JSON.stringify(mp);
+ if(pickerSearch) pickerSearch.value='';
+ renderPickerRows(models,mp);
+}
+function renderPickerRows(list,mp){
+ picker.innerHTML=list.length?list.map(m=>`<div class="pick"><label class="pick-main"><input type="checkbox" data-id="${m.id}" ${mp[m.id]?'checked':''}>${m.image?`<img src="${E(m.image)}">`:'<span style="font-size:28px;text-align:center">🧩</span>'}<span class="pick-info"><b title="${E(m.name)}">${E(m.name)}</b><span class="hint">${E(m.category||'Chưa phân loại')}</span></span></label><div class="pick-qty"><span>SL</span><input data-q="${m.id}" type="number" min="1" value="${mp[m.id]||1}"></div></div>`).join(''):`<div class="picker-empty">Không tìm thấy mẫu phù hợp.</div>`;
+}
+function filterOrderPicker(){
+ const q=(pickerSearch?.value||'').toLowerCase().trim();
+ const state={};
+ try{Object.assign(state,JSON.parse(picker.dataset.selected||'{}'))}catch(e){}
+ picker.querySelectorAll('[data-id]').forEach(c=>{if(c.checked){const qi=picker.querySelector(`[data-q="${c.dataset.id}"]`);state[c.dataset.id]=Math.max(1,Number(qi?.value||1))}else delete state[c.dataset.id]});
+ picker.dataset.selected=JSON.stringify(state);
+ const list=models.filter(m=>!q||[m.name,m.category,m.url,m.note].join(' ').toLowerCase().includes(q));
+ renderPickerRows(list,state);
+}
+async function saveOrder(e){e.preventDefault();let state={};try{Object.assign(state,JSON.parse(picker.dataset.selected||'{}'))}catch(x){};picker.querySelectorAll('[data-id]').forEach(c=>{if(c.checked){let qi=picker.querySelector(`[data-q="${c.dataset.id}"]`);state[c.dataset.id]=Math.max(1,+qi?.value||1)}else delete state[c.dataset.id]});let items=Object.entries(state).map(([modelId,qty])=>({modelId,qty}));if(!items.length)return alert('Chọn ít nhất 1 mẫu.');let id=orderId.value||crypto.randomUUID(),old=orderData.find(x=>x.id===id),o={id,name:orderName.value.trim(),note:orderNote.value.trim(),items,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};let i=orderData.findIndex(x=>x.id===id);i>=0?orderData[i]=o:orderData.unshift(o);try{await saveOrderDb(o);orderDlg.close();renderOrders()}catch(err){alert('Không thể lưu đơn: '+err.message)}}
+function renderOrders(){let q=search.value.toLowerCase().trim(),list=orderData.filter(o=>!q||[o.name,o.note].join(' ').toLowerCase().includes(q));countOrders.textContent=`${orderData.length} đơn`;orders.innerHTML=list.length?list.map(o=>`<article class="order"><div class="orderhead"><div><div class="ordername">${E(o.name)}</div><div class="hint">${new Date(o.createdAt).toLocaleString('vi-VN')}</div></div><div><button class="btn soft" onclick="editOrder('${o.id}')">Sửa</button> <button class="btn danger" onclick="delOrder('${o.id}')">Xóa</button></div></div><div class="note">${E(o.note||'')}</div><div class="items">${o.items.map(i=>{let m=models.find(x=>x.id===i.modelId);return m?`<div class="item">${m.image?`<img src="${E(m.image)}">`:'🧩'}<span><b>${E(m.name)}</b><br><span class="qty">× ${i.qty}</span></span><button class="btn soft" onclick='openSource(${JSON.stringify(m.url)})'>↗</button></div>`:''}).join('')}</div></article>`).join(''):`<div class="empty">Chưa có đơn hàng.</div>`}
 function editOrder(id){let o=orderData.find(x=>x.id===id);if(!o)return;orderId.value=o.id;orderName.value=o.name;orderNote.value=o.note||'';orderTitle.textContent='Sửa đơn hàng';renderPicker(o.items);orderDlg.showModal()}
 async function delOrder(id){if(confirm('Xóa đơn hàng này?')){try{await deleteOrderDb(id);orderData=orderData.filter(x=>x.id!==id);renderOrders()}catch(err){alert('Không thể xóa đơn: '+err.message)}}}
 
@@ -227,7 +314,7 @@ el.pasteBox.addEventListener('paste',async e=>{
    el.pasteBox.innerHTML=`✓ Đã dán và nén ảnh (~${approx} KB)<br><span class="hint">Ảnh đủ nhỏ để lưu vào Firestore. Ctrl+V ảnh khác để thay thế.</span>`;
  }catch(err){console.error(err);el.pasteBox.classList.remove('has');el.pasteBox.innerHTML='📋 Click vào đây rồi Ctrl+V để dán ảnh từ clipboard';alert('Không xử lý được ảnh: '+err.message)}
 });
-Object.assign(window,{page,render,renderModels,renderOrders,setActiveCategory,addCurrent,openModel,editModel,delModel,openOrder,editOrder,delOrder,saveModel,saveOrder,showPreview,modelDlg:el.modelDlg,modelForm:el.modelForm,orderDlg,orderForm});
+Object.assign(window,{page,render,renderModels,renderOrders,setActiveCategory,addCurrent,openModel,editModel,delModel,showModelDetail,detailTab,addModelToOrder,openOrder,editOrder,delOrder,saveModel,saveOrder,showPreview,filterOrderPicker,modelDlg:el.modelDlg,modelForm:el.modelForm,detailDlg,orderDlg,orderForm});
 loadFirebase();
 </script>
 </body></html>
