@@ -65,7 +65,7 @@ dialog{width:min(620px,94vw);border:0;border-radius:16px;padding:0;box-shadow:0 
 <label>Giá bán (VNĐ)<input id="price" type="number" min="0" step="1000" placeholder="Ví dụ: 50000"></label>
 <label>Chi phí (VNĐ)<input id="cost" type="number" min="0" step="1000" placeholder="Ví dụ: 18000"></label>
 <label>URL ảnh<input id="image" type="text" placeholder="https://...jpg" oninput="showPreview()"></label>
-<div id="pasteBox" class="pastebox" tabindex="0">📋 Click vào đây rồi Ctrl+V để dán ảnh từ clipboard<br><span class="hint">Ảnh dán sẽ được lưu trực tiếp vào dữ liệu dưới dạng Data URL.</span></div>
+<div id="pasteBox" class="pastebox" tabindex="0">📋 Click vào đây rồi Ctrl+V để dán ảnh từ clipboard<br><span class="hint">Ảnh dán sẽ tự được nén nhỏ trước khi lưu vào Firestore (không cần Storage).</span></div>
 <div class="preview"><img id="prev" alt=""><div><b>Xem trước ảnh</b><div id="imgMode" class="hint">Có thể dùng URL hoặc dán trực tiếp ảnh.</div></div></div>
 <label>Ghi chú<textarea id="note" placeholder="Màu, kích thước, lưu ý khi in..."></textarea></label>
 </form><div class="modalfoot"><button class="btn soft" onclick="modelDlg.close()">Hủy</button><button class="btn primary" onclick="modelForm.requestSubmit()">Lưu mẫu</button></div></div></dialog>
@@ -172,9 +172,9 @@ function renderModels(){
  </div></article>`).join(''):`<div class="empty" style="grid-column:1/-1">Chưa có mẫu. Chọn <b>Thêm mẫu</b> để bắt đầu.</div>`
 }
 function cardMenu(id){let a=prompt('Nhập 1 để Sửa, 2 để Xóa, 3 để Mở link mẫu:','1');if(a==='1')editModel(id);if(a==='2')delModel(id);if(a==='3'){let m=models.find(x=>x.id===id);if(m)window.open(m.url,'_blank')}}
-function openModel(){el.modelForm.reset();el.modelId.value='';el.modelTitle.textContent='Thêm mẫu';el.prev.removeAttribute('src');el.pasteBox.classList.remove('has');el.imgMode.textContent='Có thể dùng URL hoặc dán trực tiếp ảnh.';el.modelDlg.showModal()}
+function openModel(){el.modelForm.reset();el.modelId.value='';el.modelTitle.textContent='Thêm mẫu';el.prev.removeAttribute('src');el.pasteBox.classList.remove('has');el.imgMode.textContent='Có thể dùng URL hoặc dán ảnh; ảnh dán sẽ tự nén trước khi lưu.';el.modelDlg.showModal()}
 function editModel(id){let m=models.find(x=>x.id===id);if(!m)return;el.modelId.value=m.id;el.url.value=m.url;el.modelName.value=m.name;el.category.value=m.category;el.image.value=m.image||'';el.price.value=m.price||'';el.cost.value=m.cost||'';el.note.value=m.note||'';el.modelTitle.textContent='Sửa mẫu';showPreview();el.pasteBox.classList.toggle('has',(m.image||'').startsWith('data:image'));el.modelDlg.showModal()}
-function showPreview(){el.prev.src=el.image.value||'';el.imgMode.textContent=(el.image.value||'').startsWith('data:image')?'Ảnh đang được lưu trực tiếp trong dữ liệu.':'Ảnh đang được tải từ URL.'}
+function showPreview(){el.prev.src=el.image.value||'';el.imgMode.textContent=(el.image.value||'').startsWith('data:image')?'Ảnh đã được nén và lưu trực tiếp trong Firestore.':'Ảnh đang được tải từ URL.'}
 async function saveModel(e){
  e.preventDefault();
  try{
@@ -193,13 +193,39 @@ function renderOrders(){let q=search.value.toLowerCase().trim(),list=orderData.f
 function editOrder(id){let o=orderData.find(x=>x.id===id);if(!o)return;orderId.value=o.id;orderName.value=o.name;orderNote.value=o.note||'';orderTitle.textContent='Sửa đơn hàng';renderPicker(o.items);orderDlg.showModal()}
 async function delOrder(id){if(confirm('Xóa đơn hàng này?')){try{await deleteOrderDb(id);orderData=orderData.filter(x=>x.id!==id);renderOrders()}catch(err){alert('Không thể xóa đơn: '+err.message)}}}
 
-el.pasteBox.addEventListener('paste',e=>{
+async function compressImageFile(file,maxSide=900,targetBytes=450*1024){
+ const bitmap=await createImageBitmap(file);
+ let scale=Math.min(1,maxSide/Math.max(bitmap.width,bitmap.height));
+ let w=Math.max(1,Math.round(bitmap.width*scale)),h=Math.max(1,Math.round(bitmap.height*scale));
+ const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+ const ctx=canvas.getContext('2d');ctx.drawImage(bitmap,0,0,w,h);bitmap.close?.();
+ let quality=.82,data='';
+ for(let round=0;round<8;round++){
+   data=canvas.toDataURL('image/jpeg',quality);
+   if(data.length*0.75<=targetBytes||quality<=.38)break;
+   quality-=.08;
+ }
+ if(data.length*0.75>targetBytes){
+   const ratio=Math.sqrt(targetBytes/(data.length*0.75))*0.92;
+   const c2=document.createElement('canvas');c2.width=Math.max(1,Math.round(w*ratio));c2.height=Math.max(1,Math.round(h*ratio));
+   c2.getContext('2d').drawImage(canvas,0,0,c2.width,c2.height);
+   data=c2.toDataURL('image/jpeg',.68);
+ }
+ return data;
+}
+
+el.pasteBox.addEventListener('paste',async e=>{
+ e.preventDefault();
  const f=[...e.clipboardData.files].find(f=>f.type.startsWith('image/'));
  if(!f){alert('Clipboard chưa có hình ảnh. Hãy Copy image hoặc chụp màn hình rồi Ctrl+V.');return}
- if(f.size>2.5*1024*1024){alert('Ảnh khá lớn. Nên dùng ảnh dưới 2.5 MB để tránh dữ liệu Firebase/localStorage quá nặng.');return}
- const r=new FileReader();
- r.onload=()=>{el.image.value=r.result;showPreview();el.pasteBox.classList.add('has');el.pasteBox.innerHTML='✓ Đã dán ảnh vào dữ liệu<br><span class="hint">Bạn có thể Ctrl+V ảnh khác để thay thế.</span>'};
- r.readAsDataURL(f);
+ try{
+   el.pasteBox.innerHTML='⏳ Đang nén ảnh...';
+   const data=await compressImageFile(f);
+   const approx=Math.round(data.length*0.75/1024);
+   if(data.length>700000){throw new Error('Ảnh sau khi nén vẫn quá lớn. Hãy dùng ảnh nhỏ hơn.')}
+   el.image.value=data;showPreview();el.pasteBox.classList.add('has');
+   el.pasteBox.innerHTML=`✓ Đã dán và nén ảnh (~${approx} KB)<br><span class="hint">Ảnh đủ nhỏ để lưu vào Firestore. Ctrl+V ảnh khác để thay thế.</span>`;
+ }catch(err){console.error(err);el.pasteBox.classList.remove('has');el.pasteBox.innerHTML='📋 Click vào đây rồi Ctrl+V để dán ảnh từ clipboard';alert('Không xử lý được ảnh: '+err.message)}
 });
 Object.assign(window,{page,render,renderModels,renderOrders,setActiveCategory,addCurrent,openModel,editModel,delModel,openOrder,editOrder,delOrder,saveModel,saveOrder,showPreview,modelDlg:el.modelDlg,modelForm:el.modelForm,orderDlg,orderForm});
 loadFirebase();
